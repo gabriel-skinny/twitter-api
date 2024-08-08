@@ -2,15 +2,15 @@
 
 Tentativa de recriar uma api com a maioria das funcionalidades do twitter e que seja escalável.
 
-## Conteúdos
+## Tabela de Conteúdos
 
-- [Estudos](#-Estudos)
-- [High-Level-Design] (##-High-Level-Design)
-- [Entitdades](#-Entitdades)
-- [Requirements](##-Requirements)
-- [Especificacoes](##-Especificações)
-- [Dados do Twitter](##-Dados do Twitter)
-- [Endpoints](##-Endpoints)
+- [Estudos](#-estudos)
+- [High-Level-Design] (#-high-level-design)
+- [Entitdades](#-entitdades)
+- [Requirements](#-requirements)
+- [Especificacoes](#-especificações)
+- [Dados-do-Twitter](#-dados-do-twitter)
+- [Endpoints](#-endpoints)
 
 ## Estudos
 
@@ -83,7 +83,7 @@ Feed:
 
 - Os ultimos posts dos followers do usuario
 
-## Dados do Twitter
+## Dados-do-Twitter
 
 - 500M Usuarios totais
 - 200M de Usuarios Ativos
