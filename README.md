@@ -2,12 +2,28 @@
 
 Tentativa de recriar uma api com a maioria das funcionalidades do twitter e que seja escalável.
 
+## Conteúdos
+
+- [Estudos](#-Estudos)
+- [High-Level-Design] (##-High-Level-Design)
+- [Entitdades](#-Entitdades)
+- [Requirements](##-Requirements)
+- [Especificacoes](##-Especificações)
+- [Dados do Twitter](##-Dados do Twitter)
+- [Endpoints](##-Endpoints)
+
 ## Estudos
 
-- [Databases](#-about)
-- [Design-System do Twitter](#-certification)
-- [Estrutura de dados](#-how-to-build)
-- [Design-System](#-documentation)
+- [Databases](https://github.com/gabriel-skinny/twitter-api/blob/main/readme/Estudo-Database.md)
+- [Design-System do Twitter](https://github.com/gabriel-skinny/twitter-api/blob/main/readme/Estudo-Design-System.md)
+- [Estrutura de dados](https://github.com/gabriel-skinny/twitter-api/blob/main/readme/Estudo-Estrutura-de-Dados.md)
+- [Design-System](https://github.com/gabriel-skinny/twitter-api/blob/main/readme/Estudo.md)
+
+## High-Level-Design
+
+## Entitdades
+
+()
 
 ## Requirements
 
@@ -50,7 +66,9 @@ Feed:
 
 - Usuario consegue ver o seu feed
 
-## Especificações do Tweet
+## Especificações
+
+### Especificações do Tweet
 
 - Limite de 140 Caracteres
 - Suporta Video
@@ -61,7 +79,7 @@ Feed:
 - Os detalhes do comentário mostram 2 graus de profundidade se for um reply feito pelo usuario criador do comentário
 - É possivel ver uma thread inteira de comentários de um usuario
 
-## Especificações do Feed
+### Especificações do Feed
 
 - Os ultimos posts dos followers do usuario
 
@@ -87,6 +105,8 @@ Conclusões:
 - CDN para salvar as fotos e vídeos usando o algoritimo PULL
 - Criar os feeds dos usuarios asincronamente e salva em um cache para deixar disponivel instantaneamente
 - Salvar profiles muito acessados em cache
+
+## Endpoints
 
 ## Cliente-Service
 
