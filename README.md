@@ -4,13 +4,13 @@ Tentativa de recriar uma api com a maioria das funcionalidades do twitter e que 
 
 ## Tabela de Conteúdos
 
-- [Estudos](#-estudos)
-- [High-Level-Design] (#-high-level-design)
-- [Entitdades](#-entitdades)
-- [Requirements](#-requirements)
-- [Especificacoes](#-especificações)
-- [Dados-do-Twitter](#-dados-do-twitter)
-- [Endpoints](#-endpoints)
+- [Estudos](#estudos)
+- [High-Level-Design] (#high-level-design)
+- [Entitdades](#entitdades)
+- [Requirements](#requirements)
+- [Especificacoes](#especificações)
+- [Dados-do-Twitter](#dados-do-twitter)
+- [Endpoints](#endpoints)
 
 ## Estudos
 
