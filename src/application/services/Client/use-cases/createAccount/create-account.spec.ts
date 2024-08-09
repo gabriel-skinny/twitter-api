@@ -1,5 +1,6 @@
 import ErrorUserAlreadyCreated from "../../errors/userAlreadyCreated";
 import EmailProviderStub from "../../provider/emailProviderStub";
+import InMemoryEmailValidationRepository from "../../repositories/emailValidation/inMemoryEmailValidationRepository";
 import InMemoryUserRepositroy from "../../repositories/userRepository/inMemoryUserRepository";
 import CryptoServiceStub from "../../util/cryptoServiceStub";
 import { CreateAccountUseCase } from "./create-account-use-case";
@@ -8,14 +9,15 @@ const makeUseCaseSut = () => {
     const cryptoService = new CryptoServiceStub(); 
     const userRepository = new InMemoryUserRepositroy();
     const emailProvider = new EmailProviderStub();
+    const emailValidationRepository = new InMemoryEmailValidationRepository();
 
-    const createAccountUseCase =  new CreateAccountUseCase(cryptoService, userRepository, emailProvider);
+    const createAccountUseCase =  new CreateAccountUseCase(cryptoService, userRepository, emailValidationRepository, emailProvider);
     
-    return { cryptoService, emailProvider, userRepository, createAccountUseCase };
+    return { cryptoService, emailProvider, emailValidationRepository, userRepository, createAccountUseCase };
 }
 
 describe("Create Account Use Case", () => {
-    it ("should be able to create a user", async () => {
+    it ("should create a user", async () => {
         const { createAccountUseCase, userRepository } = makeUseCaseSut()
         
         await createAccountUseCase.execute({
@@ -25,6 +27,18 @@ describe("Create Account Use Case", () => {
         });
 
         expect(userRepository.userDatabase).toHaveLength(1);
+    });
+
+    it ("should Create a email Validation", async () => {
+        const { createAccountUseCase, emailValidationRepository } = makeUseCaseSut()
+        
+        await createAccountUseCase.execute({
+            email: "gabriel@gmail.com",
+            name: "gabriel",
+            password: "teste"
+        });
+
+        expect(emailValidationRepository.emailValidation).toHaveLength(1);
     });
 
     it("should not be able to create a user with the same email", async () => {

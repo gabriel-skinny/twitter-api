@@ -3,7 +3,6 @@ import AbstractUserRepository from "./userRepository";
 
 
 export default class InMemoryUserRepositroy implements AbstractUserRepository {
-
     public userDatabase: User[] = [];
     
     async save(user: User): Promise<void> {
@@ -15,5 +14,13 @@ export default class InMemoryUserRepositroy implements AbstractUserRepository {
     }
     async existsByName(name: string): Promise<boolean> {
         return !!this.userDatabase.filter(u => u.name == name).length;
+    }
+
+    async findById(id: string): Promise<User | null> {
+        const user = this.userDatabase.find(u => u.id == id);
+
+        if (!user) return null
+
+        return user;
     }
 }

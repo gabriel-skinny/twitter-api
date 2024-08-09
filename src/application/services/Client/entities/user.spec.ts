@@ -1,16 +1,8 @@
-import CryptoServiceStub from "../util/cryptoServiceStub";
-import { Password } from "./Password";
-import User from "./User"
+import { makeUser } from "../tests/factories/makeUser";
 
 describe("User entity test", () => {
     it ("should create a user", () => {
-        const cryptoServiceStub = new CryptoServiceStub();
-        const user = new User({
-            name: "gabriel",
-            email: "gabriel",
-            email_validated: true,
-            password_hash: new Password("password", cryptoServiceStub)
-        });
+        const user = makeUser();
 
         expect(user).toBeTruthy();
     })

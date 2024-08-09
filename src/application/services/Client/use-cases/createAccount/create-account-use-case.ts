@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
-import User from "../../entities/User";
+import { EmailValidation } from "../../entities/EmailValidation";
 import { Password } from "../../entities/Password";
-import UserAbstractRepository  from "../../repositories/userRepository/userRepository";
-import AbstractCryptoService from "../../util/cryptoService";
+import User from "../../entities/User";
 import ErrorUserAlreadyCreated from "../../errors/userAlreadyCreated";
 import AbstractEmailProvider from "../../provider/emailProvider";
-import { EmailValidation } from "../../entities/EmailValidation";
-import AbstractEmailValidation from "../../repositories/emailValidation/emailValidationRepository";
 import AbstractEmailValidationRepository from "../../repositories/emailValidation/emailValidationRepository";
+import UserAbstractRepository from "../../repositories/userRepository/userRepository";
+import AbstractCryptoService from "../../util/cryptoService";
+import { ValidationCode } from "../../entities/ValidationCode";
 
 interface IDataProps {
     name: string;
@@ -38,6 +38,7 @@ export class CreateAccountUseCase {
 
         const emailValidation = new EmailValidation({
             userId: user.id,
+            validationCode: new ValidationCode()
         });
         await this.emailValidationRepository.save(emailValidation);
         

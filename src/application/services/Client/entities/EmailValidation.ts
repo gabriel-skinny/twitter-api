@@ -1,18 +1,19 @@
 import { randomUUID } from "crypto";
 import ErrorEmailValidationEntityCreation from "../errors/emailValidationEntityCreation";
 import { randomSixNumberLengthGenerator } from "@helpers/randomNumberGenerator";
+import { ValidationCode } from "./ValidationCode";
 
 interface IEmailValidationProps {
 	id?: string;
 	validated?: boolean;
     userId: string;
-    validationCode?: number;
+    validationCode: ValidationCode;
 	expirationInHours?: number;
     createdAt?: Date;
 }
 
 type IRawValues = Omit<IEmailValidationProps, 
-"id" | "createdAt" | "validated" | "validationCode" | "expirationInHours"
+"id" | "createdAt" | "validated" | "expirationInHours"
 >;
 
 const FIXED_EXPIRATION_HOURS = 2;
@@ -21,7 +22,7 @@ export class EmailValidation {
 	private _id: string;
 	private _createdAt: Date;
 	private _validated: boolean;
-	private _validationCode: number;
+	private _validationCode: ValidationCode;
 	private _expirationInHours: number;
 	private rawValues: IRawValues;
 
@@ -29,7 +30,7 @@ export class EmailValidation {
 	this._id = props.id || randomUUID();
 	this._createdAt = props.createdAt || new Date();
 	this._validated = props.validated || false;
-	this._validationCode = props.validationCode || randomSixNumberLengthGenerator();
+	this._validationCode = props.validationCode;
 	this._expirationInHours = props.expirationInHours || FIXED_EXPIRATION_HOURS;
 
 	this.fieldValidation();
@@ -38,8 +39,6 @@ export class EmailValidation {
  }
 
  private fieldValidation() {
-	if (this._validationCode.toString().length != 6)
-		throw new ErrorEmailValidationEntityCreation("validationCode has to be 6 length");
 	if (this._expirationInHours !== FIXED_EXPIRATION_HOURS) 
 			throw new ErrorEmailValidationEntityCreation(`ExpirationInHours has to be ${FIXED_EXPIRATION_HOURS}`) 
  }

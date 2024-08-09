@@ -68,6 +68,10 @@ export default class User {
     public get bio() {
         return this.rawValues.bio;
     }
+
+    public validateEmail() {
+        this.rawValues.email_validated = true;
+    }
     
     public get password_hash(): Password {
         return this.rawValues.password_hash;
