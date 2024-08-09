@@ -122,17 +122,20 @@ Conclusões:
   - Envia email para o email cadastrado com o código de validação
 - Banco: MongoDb
 
-### Feature: Confirmação de email
+### Feature: Validação de email
 
 - Cliente: Request HTTP
-- Api: validateAccount(userId, validationCode): bool
+- Api: validateEmail(userId, validationCode)
+  - Verfica se o usuario existe
   - Verifica a validade do código e sua correspondencia
-- Banco: MongoDb
+  - Validar o email do usuario
+- Cache: Redis
 
 ### Feature: Reenvio de confirmação de email
 
 - Cliente: Request HTTP
 - Api: resendValidationCode(userId)
+  - Verifica se o usuario já pediu essa ação mais de 5 vezes nos ultimos 10 minutos
   - Verifica se no banco se o ultimo código foi enviado a menos de 2 horas
   - Caso sim:
     - Envia um email com ele
