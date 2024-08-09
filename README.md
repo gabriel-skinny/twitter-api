@@ -32,7 +32,9 @@ Usuario:
 - Usuario consegue se cadastrar
 - Usuario consegue logar
 - Usuario precisa validar seu email
+- Usuario consegue pedir novamente a validação do email
 - Usuario consegue preencher seus dados de perfil
+- Usuario consegue alterar a senha quando esquecida
 
 Profile:
 
@@ -116,22 +118,47 @@ Conclusões:
 - Api: createAccount(name, email, password, mediaId)
   - Verifica se já existe usuarios com esse email
   - Cria registro de usuario no banco como inativo
+  - Cria registro de validação de email que expira em 2 horas
   - Envia email para o email cadastrado com o código de validação
 - Banco: MongoDb
 
 ### Feature: Confirmação de email
 
 - Cliente: Request HTTP
-- Api: validateAccount(userId, digit): bool
-  - Verifica a validade do código
+- Api: validateAccount(userId, validationCode): bool
+  - Verifica a validade do código e sua correspondencia
+- Banco: MongoDb
+
+### Feature: Reenvio de confirmação de email
+
+- Cliente: Request HTTP
+- Api: resendValidationCode(userId)
+  - Verifica se no banco se o ultimo código foi enviado a menos de 2 horas
+  - Caso sim:
+    - Envia um email com ele
+  - Caso não:
+    - Cria um novo registro de Confirmação de email
+    - Envia um email com ele
+- Banco: MongoDb
+
+### Feature: Expiração da Confirmação de email
+
+- Cron: roda a cada 2 horas cancelando todos os códigos não utilizados no banco
+- Api: expireEmailConfirmation()
+  - Verifica todos os registros do validação de email com o validated: false e que tem o criado_em com mais de 2 horas
 - Banco: MongoDb
 
 ### Feature: Login
 
 - Cliente: Request HTTP
 - Api: login(email, password): token
+  - Verifica em cache se já é a 5 tentiva de login para aquele email
   - Verifica senha e email do usuario
-  - Retorna token JWT de acesso
+  - Verifica se o usuario esta com o email validado
+  - Validação falha:
+    - Gera registro ou atualiza registro de tentativa de login para aquele usuario que expira em 10 minutos
+  - Validação Passa: - Retorna token JWT de acesso
+- Cache: Redis
 
 ### Feature: Preencher dados de perfil
 
