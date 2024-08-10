@@ -1,6 +1,4 @@
 import { randomUUID } from "crypto";
-import { Replace } from "src/helpers/replace";
-import CryptoService from "../util/cryptoService";
 import { Password } from "./Password";
 
 interface IUserProps {
@@ -9,7 +7,6 @@ interface IUserProps {
     email: string;
     password_hash: Password;
     profileName?: string;
-    email_validated: boolean;
     profilePictureS3Url?: string;
     bannerS3Url?: string;
     location?: string;
@@ -48,10 +45,6 @@ export default class User {
         return this.rawValues.profileName;
     }
     
-    public get email_validated() {
-        return this.rawValues.email_validated;
-    }
-    
     public get profilePictureS3Url() {
         return this.rawValues.profilePictureS3Url;
     }
@@ -67,10 +60,6 @@ export default class User {
     }
     public get bio() {
         return this.rawValues.bio;
-    }
-
-    public validateEmail() {
-        this.rawValues.email_validated = true;
     }
     
     public get password_hash(): Password {

@@ -9,8 +9,8 @@ export default class InMemoryAbstractEmailValidationAttemptRepository implements
         this.emailValidationAttempDatabase.push(emailValidation);
     }
 
-    async findByUserId(userId: string): Promise<EmailValidationAttempt> {
-      const emailValidation = this.emailValidationAttempDatabase.find(emailValidation => emailValidation.userId == userId);
+    async findByEmailValidationId(emailValidationId: string): Promise<EmailValidationAttempt> {
+      const emailValidation = this.emailValidationAttempDatabase.find(emailValidation => emailValidation.emailValidationId == emailValidationId);
 
       if (!emailValidation) return null;
 

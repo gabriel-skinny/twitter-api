@@ -15,12 +15,11 @@ export default class ResendValidationUseCase {
     ) {}
     
     async execute(userId: string) {
-        const emailValidationAttempt = await this.emailValidationAttemptRepository.findByUserId(userId);
-        if (emailValidationAttempt.isOnMaxAttemps()) throw new Error("User already tried to make validation more than 5 times");
-
         const user = await this.userRepository.findById(userId);
-        const emailValidation = await this.emailValidationRepository.findByUserId(userId);
+        const emailValidation = await this.emailValidationRepository.findByUserEmail(user.email);
 
+        const emailValidationAttempt = await this.emailValidationAttemptRepository.findByEmailValidationId(emailValidation.id);
+        if (emailValidationAttempt.isOnMaxAttemps()) throw new Error("User already tried to make validation more than 5 times");
 
         if (emailValidationAttempt.isExpired()) {
             const newValidationCode = new ValidationCode();

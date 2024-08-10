@@ -3,5 +3,5 @@ import { EmailValidationAttempt } from "@applications/services/Client/entities/E
 
 export default abstract class AbstractEmailValidationAttemptRepository {
     abstract save(emailValidationAttempt: EmailValidationAttempt): Promise<void>; 
-    abstract findByUserId(userId: string): Promise<EmailValidationAttempt | null>;
+    abstract findByEmailValidationId(emailValidationId: string): Promise<EmailValidationAttempt | null>;
 }

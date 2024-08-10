@@ -1,28 +1,37 @@
 import { EXPIRES_EMAIL_ATTEMPT_IN_MINUTES, MAX_RETRIES_EMAIL_VALIDATION_ATTEMPT } from "@constants/emailValidationAttempt";
 import { BaseAttempt } from "./baseAttempt";
+import { randomUUID } from "crypto";
 
 interface IEmailValidationAttemptProps {
     id?: string;
-    userId: string;
+    emailValidationId: string;
     expiresInMinutes?: number;
     attempts?: number;
     createdAt?: Date;
 }
 
 export class EmailValidationAttempt extends BaseAttempt {
-    private readonly _userId: string;
+    private readonly _id: string;
+    private readonly _emailValidationId: string;
 
     constructor(props: IEmailValidationAttemptProps) {
         super({
-            ...props, 
+            attempts: props.attempts,
+            createdAt: props.createdAt,
             max_attempts: MAX_RETRIES_EMAIL_VALIDATION_ATTEMPT,
-            expiresInMinutes: EXPIRES_EMAIL_ATTEMPT_IN_MINUTES
+            expiresInMinutes: props.expiresInMinutes,
+            expiresInMinutesFixedValue: EXPIRES_EMAIL_ATTEMPT_IN_MINUTES
         });    
-        this._userId = props.userId;
+        this._emailValidationId = props.emailValidationId;
+        this._id = props.id || randomUUID();
     }
 
-    public get userId() {
-        return this._userId;
+    public get emailValidationId() {
+        return this._emailValidationId;
+    }
+
+    public get id() {
+        return this._id;
     }
 
 }

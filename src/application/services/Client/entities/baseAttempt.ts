@@ -1,35 +1,28 @@
-import { randomUUID } from "crypto";
+import { BaseExpiresIn } from "./baseExpiresIn";
 
-interface IBaseAttemp {
-    id?: string;
-    expiresInMinutes: number;
+interface IBaseAttempProps {
+    expiresInMinutes?: number;
+    expiresInMinutesFixedValue: number;
     attempts?: number;
     max_attempts: number;
     createdAt?: Date;
 }
 
-export class BaseAttempt {
-    private _id: string;
-    private _expiresInMinutes: number;
+export class BaseAttempt extends BaseExpiresIn {
     private _attemps: number;
-    private _createdAt: Date;
     private _max_attempts: number;
 
-    constructor(props: IBaseAttemp) {
-        this._id = props.id || randomUUID();
-        this._expiresInMinutes = props.expiresInMinutes;
+    constructor(props: IBaseAttempProps) {
+        super({ 
+            expiresInValue: props.expiresInMinutes,
+            expiresInMinutesFixedValue: props.expiresInMinutesFixedValue,
+            createdAt: props.createdAt
+        })
+
         this._attemps = 0;
         this._max_attempts = props.max_attempts;
-        this._createdAt = new Date();
-    }
- 
-    public get id() {
-        return this._id;
     }
 
-    public get expiresInMinutes() {
-        return this._expiresInMinutes;
-    }
 
     public get attempts() {
         return this._attemps;
@@ -42,13 +35,5 @@ export class BaseAttempt {
 
     public isOnMaxAttemps() {
         return this._attemps >= this._max_attempts
-    }
-
-    public isExpired() {
-        return diferenceInMinutes(this._createdAt, Date.now()) >= this._expiresInMinutes;
-    }
-
-    public get createdAt() {
-        return this._createdAt;
     }
 }

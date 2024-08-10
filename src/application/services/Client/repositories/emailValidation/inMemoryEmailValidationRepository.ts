@@ -9,8 +9,8 @@ export default class InMemoryEmailValidationRepository implements AbstractEmailV
         this.emailValidation.push(emailValidation);
     }
 
-    async findByUserId(userId: string): Promise<EmailValidation> {
-      const emailValidation = this.emailValidation.find(emailValidation => emailValidation.userId == userId);
+    async findByUserEmail(userEmail: string): Promise<EmailValidation> {
+      const emailValidation = this.emailValidation.find(emailValidation => emailValidation.userEmail == userEmail);
 
       if (!emailValidation) return null;
 
