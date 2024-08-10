@@ -32,10 +32,10 @@ Usuario:
 Cadastro:
 
 - Usuario consegue se cadastrar
-- Usuario precisa validar seu email
+- Usuario recebe código de validação de email
 - Usuario consegue pedir reenvio da validação de email
 - Usuario consegue trocar o email de confirmação
-- Usuario consegue validar seu email e criar sua conta
+- Usuario consegue validar seu email com código e ter sua conta criada
 
 Login:
 
@@ -127,11 +127,10 @@ Conclusões:
 ### Feature: Usuario consegue criar sua conta
 
 - Cliente: request Http
-- Api: registerUser(name, email, password)
-  - Verifica se já existe usuarios com esse email no banco
-  - Verifica se já existe usuario em cache
-    - Se sim:
-      - Deleta registro do cache
+- Api: registerUser(name, email, password): preUserId
+  - Verifica se já existe usuarios com esse email ou nome no banco
+  - Verifica se já existe um preUsuario com esse nome, se sim retorna erro
+  - Verifica se já existe um preUsuario com email. Se sim deleta registro do cache
   - Cria registro no cache com os dados do usuario que expira em 2 horas
   - Verifica se já existe um registro de validação de email
     - Se sim:
