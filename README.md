@@ -142,7 +142,7 @@ Conclusões:
   - Caso não:
     - Cria um novo registro de Confirmação de email
     - Envia um email com ele
-- Banco: MongoDb
+- Cache: Redis
 
 ### Feature: Expiração da Confirmação de email
 
@@ -154,6 +154,7 @@ Conclusões:
 ### Feature: Login
 
 - Cliente: Request HTTP
+- Verifica se o usuario validou o email
 - Api: login(email, password): token
   - Verifica em cache se já é a 5 tentiva de login para aquele email
   - Verifica senha e email do usuario
