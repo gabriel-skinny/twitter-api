@@ -67,6 +67,10 @@ export class EmailValidation {
 	return this._expirationInHours
  }
 
+ public set validationCode(validationCode: ValidationCode) {
+	this._validationCode = validationCode;
+ }
+
  public get createdAt() {
 	return this._createdAt;
  }

@@ -36,12 +36,17 @@ export class CreateAccountUseCase {
         });
         await this.userRepository.save(user);
 
+        const validationCode = new ValidationCode();
         const emailValidation = new EmailValidation({
             userId: user.id,
-            validationCode: new ValidationCode()
+            validationCode
         });
         await this.emailValidationRepository.save(emailValidation);
         
-        this.emailService.sendEmail({ destinyEmail: data.email, emailType: "emailConfirmation"});
+        this.emailService.sendEmail({ 
+            destinyEmail: data.email, 
+            emailType: "emailConfirmation",
+            content: `Send this validation code: ${validationCode.value}`
+        });
     }
 }
