@@ -29,12 +29,20 @@ Tentativa de recriar uma api com a maioria das funcionalidades do twitter e que 
 
 Usuario:
 
+Cadastro:
+
 - Usuario consegue se cadastrar
-- Usuario consegue logar
 - Usuario precisa validar seu email
-- Usuario consegue pedir novamente a validação do email
-- Usuario consegue preencher seus dados de perfil
-- Usuario consegue alterar a senha quando esquecida
+- Usuario consegue pedir reenvio da validação de email
+- Usuario consegue trocar o email de confirmação
+- Usuario consegue validar seu email e criar sua conta
+
+Login:
+
+- Usuario consegue logar
+- Usuario consegue preencher editar dados de perfil
+- Usuario consegue editar a senha quando esquecida
+- Usuario consegue deletar seu perfil
 
 Profile:
 
@@ -110,17 +118,30 @@ Conclusões:
 
 ## Endpoints
 
+## Gateway
+
+### Feature: Um Ip só poderá enviar 10 requisições no intervalo de 5 minutos
+
 ## Cliente-Service
 
 ### Feature: Usuario consegue criar sua conta
 
 - Cliente: request Http
-- Api: createAccount(name, email, password, mediaId)
-  - Verifica se já existe usuarios com esse email
-  - Cria registro de usuario no banco como inativo
-  - Cria registro de validação de email que expira em 2 horas
+- Api: registerUser(name, email, password)
+  - Verifica se já existe usuarios com esse email no banco
+  - Verifica se já existe usuario em cache
+    - Se sim:
+      - Deleta registro do cache
+  - Cria registro no cache com os dados do usuario que expira em 2 horas
+  - Verifica se já existe um registro de validação de email
+    - Se sim:
+      - pega o código enviado
+      - Adiciona uma nova tentativa a essa validação
+    - Se não:
+      - Cria registro de validação de email no cache que expira em 2 horas com um novo código de validação
   - Envia email para o email cadastrado com o código de validação
 - Banco: MongoDb
+- Cache: Redis
 
 ### Feature: Validação de email
 
