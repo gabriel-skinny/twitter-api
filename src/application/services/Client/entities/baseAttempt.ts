@@ -29,7 +29,7 @@ export class BaseAttempt extends BaseExpiresIn {
     }
 
     public addAttempt() {
-        if (this.isOnMaxAttemps) throw new Error("Cannot add more attemps")
+        if (this.isOnMaxAttemps()) throw new Error("Cannot add more attemps")
         this._attemps += 1;
     }
 

@@ -52,6 +52,10 @@ export class EmailValidation extends BaseExpiresIn{
 	return this.rawValues.userEmail;
  }
 
+ public set userEmail(email: string) {
+	this.rawValues.userEmail = email;
+ }
+
  public get validationCode() {
 	return this._validationCode;
  }

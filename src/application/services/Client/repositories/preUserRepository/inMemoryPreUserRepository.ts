@@ -27,4 +27,8 @@ export default class InMemoryPreUserRepositroy implements AbstractPreUserReposit
     async deleteByEmail(email: string): Promise<void> {
         this.preUserDatabase = this.preUserDatabase.filter(u => u.email !== email); 
     }
+
+    findByEmail(email: string): Promise<PreUser | null> {
+        throw new Error("Method not implemented.");
+    }
 }

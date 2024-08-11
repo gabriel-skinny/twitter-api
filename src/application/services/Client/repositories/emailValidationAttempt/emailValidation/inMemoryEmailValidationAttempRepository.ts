@@ -2,7 +2,7 @@ import { EmailValidationAttempt } from "@applications/services/Client/entities/E
 import AbstractEmailValidationAttemptRepository from "./emailValidationAttempt";
 
 
-export default class InMemoryAbstractEmailValidationAttemptRepository implements AbstractEmailValidationAttemptRepository {
+export default class InMemoryEmailValidationAttemptRepository implements AbstractEmailValidationAttemptRepository {
     public emailValidationAttempDatabase: EmailValidationAttempt[] = [];
     
     async save(emailValidation: EmailValidationAttempt): Promise<void> {

@@ -36,6 +36,10 @@ export default class PreUser extends BaseExpiresIn {
     public get email() {
         return this.rawValues.email;
     }
+    
+    public set email(email: string) {
+        this.rawValues.email = email;
+    }
 
     public get name() {
         return this.rawValues.name
