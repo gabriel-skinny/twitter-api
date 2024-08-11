@@ -142,6 +142,18 @@ Conclusões:
 - Banco: MongoDb
 - Cache: Redis
 
+### Feature: Usuario consegue trocar seu email de validação
+
+- Cliente: Request HTTP
+- Api: editValidationEmail(userId, newEmail)
+  - Verifica se já existe algum usuario cadastro com esse email
+  - Verifica se existe algum preUser no cache com aquele email, se sim retorna erro.
+  - Verfica se o preUser existe
+  - Verifica se não existe nenhum usuario com esse email
+  - Atualiza o preUser
+  - Atualiza o emailValidation do preUser se ele existe
+- Cache: Redis
+
 ### Feature: Validação de email
 
 - Cliente: Request HTTP
