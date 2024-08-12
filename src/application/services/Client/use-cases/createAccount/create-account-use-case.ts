@@ -3,7 +3,7 @@ import { EmailValidation } from "../../entities/EmailValidation";
 import { Password } from "../../entities/Password";
 import User from "../../entities/User";
 import ErrorUserAlreadyCreated from "../../errors/userAlreadyCreated";
-import AbstractEmailProvider from "../../provider/emailProvider";
+import AbstractEmailProvider from "../../services/emailProvider";
 import AbstractEmailValidationRepository from "../../repositories/emailValidation/emailValidationRepository";
 import AbstractUserRepository from "../../repositories/userRepository/userRepository";
 import AbstractCryptoService from "../../util/cryptoService";

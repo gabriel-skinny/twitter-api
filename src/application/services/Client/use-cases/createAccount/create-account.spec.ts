@@ -2,7 +2,7 @@ import { EmailValidation } from "../../entities/EmailValidation";
 import { EmailValidationAttempt } from "../../entities/EmailValidationAttempt";
 import { ValidationCode } from "../../entities/ValidationCode";
 import ErrorUserAlreadyCreated from "../../errors/userAlreadyCreated";
-import EmailProviderStub from "../../provider/emailProviderStub";
+import EmailProviderStub from "../../services/emailProviderStub";
 import InMemoryEmailValidationRepository from "../../repositories/emailValidation/inMemoryEmailValidationRepository";
 import InMemoryEmailValidationAttemptRepository from "../../repositories/emailValidationAttempt/emailValidation/inMemoryEmailValidationAttempRepository";
 import InMemoryPreUserRepositroy from "../../repositories/preUserRepository/inMemoryPreUserRepository";

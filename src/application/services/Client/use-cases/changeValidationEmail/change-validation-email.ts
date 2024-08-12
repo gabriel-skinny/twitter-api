@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import ErrorUserAlreadyCreated from "../../errors/userAlreadyCreated";
-import AbstractEmailProvider from "../../provider/emailProvider";
+import AbstractEmailProvider from "../../services/emailProvider";
 import AbstractEmailValidationRepository from "../../repositories/emailValidation/emailValidationRepository";
 import AbstractEmailValidationAttemptRepository from "../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
 import AbstractPreUserRepository from "../../repositories/preUserRepository/preUserRepository";

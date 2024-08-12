@@ -2,12 +2,14 @@ import { EXPIRES_EMAIL_VALIDATION_IN_MINUTES } from "@constants/emailValidation"
 import { randomUUID } from "crypto";
 import { ValidationCode } from "./ValidationCode";
 import { BaseExpiresIn } from "./baseExpiresIn";
+import { EmailValidationAttempt } from "./EmailValidationAttempt";
 
 interface IEmailValidationProps {
 	id?: string;
 	validated?: boolean;
     userEmail: string;
     validationCode: ValidationCode;
+	validationAttempt?: EmailValidationAttempt;
 	expirationIn?: number;
     createdAt?: Date;
 }
@@ -20,6 +22,7 @@ export class EmailValidation extends BaseExpiresIn{
 	private _id: string;
 	private _validated: boolean;
 	private _validationCode: ValidationCode;
+	private _validationAttempt: EmailValidationAttempt;
 	private rawValues: IRawValues;
 
  constructor(props: IEmailValidationProps) {
@@ -34,6 +37,8 @@ export class EmailValidation extends BaseExpiresIn{
 	this._validationCode = props.validationCode;
 
 	this.rawValues = { ...props }
+
+	this._validationAttempt = props.validationAttempt || new EmailValidationAttempt({ emailValidationId: this._id });
  }
 
  public get id() {
@@ -58,6 +63,10 @@ export class EmailValidation extends BaseExpiresIn{
 
  public get validationCode() {
 	return this._validationCode;
+ }
+
+ public get validationAttempt() {
+	return this._validationAttempt;
  }
 
  public set validationCode(validationCode: ValidationCode) {
