@@ -186,11 +186,10 @@ Conclusões:
 ### Feature: Login
 
 - Cliente: Request HTTP
-- Verifica se o usuario validou o email
 - Api: login(email, password): token
   - Verifica em cache se já é a 5 tentiva de login para aquele email
-  - Verifica senha e email do usuario
-  - Verifica se o usuario esta com o email validado
+  - Verifica se esse email está cadastrado
+  - Verifica senha passada
   - Validação falha:
     - Gera registro ou atualiza registro de tentativa de login para aquele usuario que expira em 10 minutos
   - Validação Passa: - Retorna token JWT de acesso
