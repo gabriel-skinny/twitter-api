@@ -1,4 +1,4 @@
-import CryptoServiceStub from "../util/cryptoServiceStub";
+import CryptoServiceStub from "../adapters/cryptoServiceStub";
 import { Password } from "./Password";
 import PreUser from "./preUser";
 

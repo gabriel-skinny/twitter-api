@@ -1,13 +1,13 @@
-import { EmailValidation } from "../../entities/EmailValidation";
-import PreUser from "../../entities/PreUser";
-import { ValidationCode } from "../../entities/ValidationCode";
-import ErrorUserAlreadyCreated from "../../errors/userAlreadyCreated";
-import ErrorUserNotFound from "../../errors/userNotFound";
-import InMemoryEmailValidationRepository from "../../repositories/emailValidation/inMemoryEmailValidationRepository";
-import InMemoryPreUserRepositroy from "../../repositories/preUserRepository/inMemoryPreUserRepository";
-import InMemoryUserRepositroy from "../../repositories/userRepository/inMemoryUserRepository";
-import { makePreUser } from "../../tests/factories/makePreUser";
-import { makeUser } from "../../tests/factories/makeUser";
+import { EmailValidation } from "../../../entities/EmailValidation";
+import PreUser from "../../../entities/PreUser";
+import { ValidationCode } from "../../../entities/ValidationCode";
+import ErrorUserAlreadyCreated from "../../../errors/userAlreadyCreated";
+import ErrorUserNotFound from "../../../errors/userNotFound";
+import InMemoryEmailValidationRepository from "../../../repositories/emailValidation/inMemoryEmailValidationRepository";
+import InMemoryPreUserRepositroy from "../../../repositories/preUserRepository/inMemoryPreUserRepository";
+import InMemoryUserRepositroy from "../../../repositories/userRepository/inMemoryUserRepository";
+import { makePreUser } from "../../../tests/factories/makePreUser";
+import { makeUser } from "../../../tests/factories/makeUser";
 import { ChangeValidationEmailUseCase } from "./change-validation-email";
 
 const makeUseCaseSut = () => {

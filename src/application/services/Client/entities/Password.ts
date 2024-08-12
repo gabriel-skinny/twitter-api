@@ -1,12 +1,12 @@
-import CryptoService from "../util/cryptoService";
-
+import AbstractCryptoService from "@infra/adapters/abstractCryptoService";
+import { CryptoService } from "@infra/adapters/CryptoService";
 
 export class Password {
     private readonly _password: string;
-    private readonly _cryptoService: CryptoService;
+    private readonly _cryptoService: AbstractCryptoService;
 
-    constructor(password: string, cryptoService: CryptoService) {
-        this._cryptoService = cryptoService;
+    constructor(password: string) {
+        this._cryptoService = new CryptoService();
 
         if (this.isHashed(password)) this._password = password;
         else this._password = this.setPasswordHash(password);
@@ -19,6 +19,10 @@ export class Password {
     
     private isHashed(password_hash: string): boolean {
         return this._cryptoService.isHashed(password_hash);
+    }
+
+    public isTheSameValue(compareRawPassword: string) {
+        return this._cryptoService.compare(compareRawPassword, this._password);
     }
 
     public get value() {

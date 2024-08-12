@@ -1,11 +1,11 @@
 import { MAX_RETRIES_EMAIL_VALIDATION_ATTEMPT } from "@constants/emailValidationAttempt";
-import { EmailValidation } from "../../entities/EmailValidation";
-import { ValidationCode } from "../../entities/ValidationCode";
-import EmailProviderStub from "../../services/emailProviderStub";
-import InMemoryEmailValidationRepository from "../../repositories/emailValidation/inMemoryEmailValidationRepository";
-import InMemoryEmailValidationAttemptRepository from "../../repositories/emailValidationAttempt/emailValidation/inMemoryEmailValidationAttempRepository";
-import InMemoryPreUserRepositroy from "../../repositories/preUserRepository/inMemoryPreUserRepository";
-import { makePreUser } from "../../tests/factories/makePreUser";
+import { EmailValidation } from "../../../entities/EmailValidation";
+import { ValidationCode } from "../../../entities/ValidationCode";
+import EmailProviderStub from "../../../services/emailProviderStub";
+import InMemoryEmailValidationRepository from "../../../repositories/emailValidation/inMemoryEmailValidationRepository";
+import InMemoryEmailValidationAttemptRepository from "../../../repositories/emailValidationAttempt/emailValidation/inMemoryEmailValidationAttempRepository";
+import InMemoryPreUserRepositroy from "../../../repositories/preUserRepository/inMemoryPreUserRepository";
+import { makePreUser } from "../../../tests/factories/makePreUser";
 import ResendValidationUseCase from "./resend-validation-code";
 
 const makeUseCaseSut = () => {

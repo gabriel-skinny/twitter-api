@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import ErrorUserAlreadyCreated from "../../errors/userAlreadyCreated";
-import AbstractEmailProvider from "../../services/emailProvider";
-import AbstractEmailValidationRepository from "../../repositories/emailValidation/emailValidationRepository";
-import AbstractEmailValidationAttemptRepository from "../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
-import AbstractPreUserRepository from "../../repositories/preUserRepository/preUserRepository";
-import AbstractUserRepository from "../../repositories/userRepository/userRepository";
-import ErrorUserNotFound from "../../errors/userNotFound";
+import ErrorUserAlreadyCreated from "../../../errors/userAlreadyCreated";
+import AbstractEmailProvider from "../../../services/emailProvider";
+import AbstractEmailValidationRepository from "../../../repositories/emailValidation/emailValidationRepository";
+import AbstractEmailValidationAttemptRepository from "../../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
+import AbstractPreUserRepository from "../../../repositories/preUserRepository/preUserRepository";
+import AbstractUserRepository from "../../../repositories/userRepository/userRepository";
+import ErrorUserNotFound from "../../../errors/userNotFound";
 
 interface IDataProps {
     preUserId: string;

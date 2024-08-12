@@ -1,9 +1,9 @@
-import { EmailValidation } from "../../entities/EmailValidation";
-import { ValidationCode } from "../../entities/ValidationCode";
-import AbstractEmailProvider from "../../services/emailProvider";
-import AbstractEmailValidationRepository from "../../repositories/emailValidation/emailValidationRepository";
-import AbstractEmailValidationAttemptRepository from "../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
-import AbstractPreUserRepository from "../../repositories/preUserRepository/preUserRepository";
+import { EmailValidation } from "../../../entities/EmailValidation";
+import { ValidationCode } from "../../../entities/ValidationCode";
+import AbstractEmailProvider from "../../../services/emailProvider";
+import AbstractEmailValidationRepository from "../../../repositories/emailValidation/emailValidationRepository";
+import AbstractEmailValidationAttemptRepository from "../../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
+import AbstractPreUserRepository from "../../../repositories/preUserRepository/preUserRepository";
 
 
 export default class ResendValidationUseCase {
