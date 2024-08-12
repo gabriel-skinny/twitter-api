@@ -124,7 +124,7 @@ Conclusões:
 
 ## Cliente-Service
 
-### Feature: Usuario consegue criar sua conta
+### Feature: Usuario consegue criar sua conta (check)
 
 - Cliente: request Http
 - Api: registerUser(name, email, password): preUserId
@@ -142,7 +142,7 @@ Conclusões:
 - Banco: MongoDb
 - Cache: Redis
 
-### Feature: Usuario consegue trocar seu email de validação
+### Feature: Usuario consegue trocar seu email de validação(check)
 
 - Cliente: Request HTTP
 - Api: editValidationEmail(userId, newEmail)
@@ -154,25 +154,25 @@ Conclusões:
   - Atualiza o emailValidation do preUser se ele existe
 - Cache: Redis
 
-### Feature: Validação de email
+### Feature: Validação de email e criação de conta
 
 - Cliente: Request HTTP
-- Api: validateEmail(userId, validationCode)
-  - Verfica se o usuario existe
+- Api: validateAccount(preUserId, validationCode): token
+  - Verfica se o preUser existe
   - Verifica a validade do código e sua correspondencia
-  - Validar o email do usuario
+  - Cria usuario
 - Cache: Redis
 
 ### Feature: Reenvio de confirmação de email
 
 - Cliente: Request HTTP
 - Api: resendValidationCode(userId)
-  - Verifica se o usuario já pediu essa ação mais de 5 vezes nos ultimos 10 minutos
-  - Verifica se no banco se o ultimo código foi enviado a menos de 2 horas
+  - Verifica se o usuario já pediu essa ação mais de 5 vezes nos ultimos 30 minutos
+  - Verifica se no cache existe um registro de validação de email com um código
   - Caso sim:
     - Envia um email com ele
   - Caso não:
-    - Cria um novo registro de Confirmação de email
+    - Cria um novo registro de Validação de email
     - Envia um email com ele
 - Cache: Redis
 
