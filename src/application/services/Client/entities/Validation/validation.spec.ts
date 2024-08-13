@@ -1,7 +1,7 @@
 import { VALIDATION_CODE_EXPIRATION_IN_HOURS } from "@constants/validationCode";
-import ErrorEmailValidationEntityCreation from "../errors/emailValidationEntityCreation";
-import { EmailValidation } from "./EmailValidation";
-import { ValidationCode } from "./ValidationCode";
+import ErrorEmailValidationEntityCreation from "../../errors/emailValidationEntityCreation";
+import { EmailValidation } from "./Validation";
+import { ValidationCode } from "../ValidationCode";
 
 describe("Email validation entity test", () => {
     it ("should create a EmailValidation entity", () => {

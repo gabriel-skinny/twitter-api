@@ -1,10 +1,10 @@
-import { EmailValidation } from "../../../entities/EmailValidation";
-import { ValidationCode } from "../../../entities/ValidationCode";
+import { EmailValidation } from "../../../entities/Validation/Validation";
+import { ValidationCode } from "../../../entities/Validation/ValidationCode";
 import ErrorUserNotFound from "../../../errors/userNotFound";
 import ErrorWrongValidationCode from "../../../errors/wrongValidationCode";
-import InMemoryEmailValidationRepository from "../../../repositories/emailValidation/inMemoryEmailValidationRepository";
+import InMemoryEmailValidationRepository from "../../../repositories/validation/InMemoryValidationRepository";
 import InMemoryPreUserRepositroy from "../../../repositories/preUserRepository/inMemoryPreUserRepository";
-import InMemoryUserRepositroy from "../../../repositories/userRepository/inMemoryUserRepository";
+import InMemoryUserRepositroy from "../../../repositories/user/inMemoryUserRepository";
 import AuthServiceStub from "../../../services/AuthServiceStub";
 import { makePreUser } from "../../../tests/factories/makePreUser";
 import { makeUser } from "../../../tests/factories/makeUser";

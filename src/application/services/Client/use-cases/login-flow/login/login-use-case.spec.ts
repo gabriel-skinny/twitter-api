@@ -1,6 +1,6 @@
 import InMemoryLoginAttemptRepository from "@applications/services/Client/repositories/loginAttempt/InMemoryLoginAttemptRepository";
 import LoginUseCase from "./login-use-case";
-import InMemoryUserRepositroy from "@applications/services/Client/repositories/userRepository/inMemoryUserRepository";
+import InMemoryUserRepositroy from "@applications/services/Client/repositories/user/inMemoryUserRepository";
 import AuthServiceStub from "@applications/services/Client/services/AuthServiceStub";
 import { makeUser } from "@applications/services/Client/tests/factories/makeUser";
 import { Password } from "@applications/services/Client/entities/Password";

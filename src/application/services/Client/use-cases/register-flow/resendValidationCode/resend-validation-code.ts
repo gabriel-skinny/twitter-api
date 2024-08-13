@@ -1,8 +1,8 @@
-import { EmailValidation } from "../../../entities/EmailValidation";
-import { ValidationCode } from "../../../entities/ValidationCode";
+import { EmailValidation } from "../../../entities/Validation/Validation";
+import { ValidationCode } from "../../../entities/Validation/ValidationCode";
 import AbstractEmailProvider from "../../../services/emailProvider";
-import AbstractEmailValidationRepository from "../../../repositories/emailValidation/emailValidationRepository";
-import AbstractEmailValidationAttemptRepository from "../../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
+import AbstractEmailValidationRepository from "../../../repositories/validation/validationRepository";
+import AbstractEmailValidationAttemptRepository from "../../../repositories/validationAttempt/validationAttempt";
 import AbstractPreUserRepository from "../../../repositories/preUserRepository/preUserRepository";
 
 

@@ -1,4 +1,4 @@
-import { makeUser } from "../tests/factories/makeUser";
+import { makeUser } from "../../tests/factories/makeUser";
 
 describe("User entity test", () => {
     it ("should create a user", () => {

@@ -1,7 +1,7 @@
 import { LoginAttempt } from "@applications/services/Client/entities/LoginAttempt";
 import ErrorUserNotFound from "@applications/services/Client/errors/userNotFound";
 import AbstractLoginAttemptRepository from "@applications/services/Client/repositories/loginAttempt/loginAttemptRepository";
-import AbstractUserRepository from "@applications/services/Client/repositories/userRepository/userRepository";
+import AbstractUserRepository from "@applications/services/Client/repositories/user/userRepository";
 import { AbstractAuthService } from "@applications/services/Client/services/AuthService";
 import { Injectable } from "@nestjs/common";
 

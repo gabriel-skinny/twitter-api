@@ -1,31 +1,37 @@
 import { EXPIRES_EMAIL_VALIDATION_IN_MINUTES } from "@constants/emailValidation";
 import { randomUUID } from "crypto";
 import { ValidationCode } from "./ValidationCode";
-import { BaseExpiresIn } from "./baseExpiresIn";
-import { EmailValidationAttempt } from "./EmailValidationAttempt";
+import { BaseExpiresIn } from "../base/baseExpiresIn";
+import { ValidationAttempt } from "./ValidationAttempt";
 
-interface IEmailValidationProps {
+export enum OperationToValidateTypeEnum {
+	EMAIL_CONFIMATION = "email_confirmation",
+	PASSWORD_CHANGE = "password_change"
+}
+
+interface IValidationProps {
 	id?: string;
 	validated?: boolean;
+	operationToValidateType: OperationToValidateTypeEnum; 
     userEmail: string;
     validationCode: ValidationCode;
-	validationAttempt?: EmailValidationAttempt;
+	validationAttempt?: ValidationAttempt;
 	expirationIn?: number;
     createdAt?: Date;
 }
 
-type IRawValues = Omit<IEmailValidationProps, 
+type IRawValues = Omit<IValidationProps, 
 "id" | "createdAt" | "validated" | "expirationIn"
 >;
 
-export class EmailValidation extends BaseExpiresIn{
+export class Validation extends BaseExpiresIn{
 	private _id: string;
 	private _validated: boolean;
 	private _validationCode: ValidationCode;
-	private _validationAttempt: EmailValidationAttempt;
+	private _validationAttempt: ValidationAttempt;
 	private rawValues: IRawValues;
 
- constructor(props: IEmailValidationProps) {
+ constructor(props: IValidationProps) {
 	super({ 
 		expiresInMinutesFixedValue: EXPIRES_EMAIL_VALIDATION_IN_MINUTES,
 		expiresInValue: props.expirationIn,
@@ -38,7 +44,7 @@ export class EmailValidation extends BaseExpiresIn{
 
 	this.rawValues = { ...props }
 
-	this._validationAttempt = props.validationAttempt || new EmailValidationAttempt({ emailValidationId: this._id });
+	this._validationAttempt = props.validationAttempt || new ValidationAttempt({ validationId: this._id });
  }
 
  public get id() {
@@ -67,6 +73,10 @@ export class EmailValidation extends BaseExpiresIn{
 
  public get validationAttempt() {
 	return this._validationAttempt;
+ }
+
+ public get operationToValidateType() {
+	return this.rawValues.operationToValidateType;
  }
 
  public set validationCode(validationCode: ValidationCode) {

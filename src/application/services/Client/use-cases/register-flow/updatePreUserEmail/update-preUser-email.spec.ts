@@ -8,7 +8,7 @@ import InMemoryPreUserRepositroy from "../../../repositories/preUserRepository/i
 import InMemoryUserRepositroy from "../../../repositories/user/inMemoryUserRepository";
 import { makePreUser } from "../../../tests/factories/makePreUser";
 import { makeUser } from "../../../tests/factories/makeUser";
-import { ChangeValidationEmailUseCase } from "./change-validation-email";
+import { ChangeValidationEmailUseCase } from "./update-preUser-email-use-case";
 
 const makeUseCaseSut = () => {
     const userRepository = new InMemoryUserRepositroy();

@@ -15,6 +15,15 @@ interface IUserProps {
     createdAt?: Date;
 }
 
+interface IUpdateFields {
+    profileName?: string;
+    profilePictureS3Url?: string;
+    bannerS3Url?: string;
+    location?: string;
+    website?: string;
+    bio?: string;
+}
+
 type IRawValues = Omit<IUserProps, "id" | "createdAt">; 
 
 export default class User {
@@ -64,6 +73,15 @@ export default class User {
     
     public get password_hash(): Password {
         return this.rawValues.password_hash;
+    }
+
+    public updateFields(data: IUpdateFields) {
+        if(data.bio) this.rawValues.bio = data.bio;
+        if(data.bannerS3Url) this.rawValues.bannerS3Url = data.bannerS3Url;
+        if(data.location) this.rawValues.location = data.location;
+        if(data.profileName) this.rawValues.profileName = data.profileName;
+        if(data.profilePictureS3Url) this.rawValues.profilePictureS3Url = data.profilePictureS3Url;
+        if(data.website) this.rawValues.website = data.website;
     }
 
     public get createdAt(): Date {

@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import AbstractEmailValidationRepository from "../../../repositories/emailValidation/emailValidationRepository";
-import AbstractUserRepository from "../../../repositories/userRepository/userRepository";
+import AbstractEmailValidationRepository from "../../../repositories/validation/validationRepository";
+import AbstractUserRepository from "../../../repositories/user/userRepository";
 import ErrorWrongValidationCode from "../../../errors/wrongValidationCode";
 import ErrorUserNotFound from "../../../errors/userNotFound";
 import AbstractPreUserRepository from "../../../repositories/preUserRepository/preUserRepository";
-import User from "../../../entities/User";
+import User from "../../../entities/User/User";
 import { AbstractAuthService } from "../../../services/AuthService";
 
 interface IValidateAccountUseCasesParams {

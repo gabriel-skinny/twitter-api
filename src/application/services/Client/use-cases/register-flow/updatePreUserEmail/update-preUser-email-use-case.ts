@@ -1,11 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import ErrorUserAlreadyCreated from "../../../errors/userAlreadyCreated";
-import AbstractEmailProvider from "../../../services/emailProvider";
-import AbstractEmailValidationRepository from "../../../repositories/emailValidation/emailValidationRepository";
-import AbstractEmailValidationAttemptRepository from "../../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
-import AbstractPreUserRepository from "../../../repositories/preUserRepository/preUserRepository";
-import AbstractUserRepository from "../../../repositories/userRepository/userRepository";
+import AbstractEmailValidationRepository from "../../../repositories/validation/validationRepository";
 import ErrorUserNotFound from "../../../errors/userNotFound";
+import AbstractUserRepository from "../../../repositories/user/userRepository";
+import AbstractPreUserRepository from "@applications/services/Client/repositories/preUser/preUserRepository";
+import UpdateEmailCodeValidationUseCase from "../../code-validation/update-email/update-email-use-case";
 
 interface IDataProps {
     preUserId: string;
@@ -13,11 +12,11 @@ interface IDataProps {
 }
 
 @Injectable()
-export class ChangeValidationEmailUseCase {
+export class UpdatePreUserEmailUseCase {
     constructor (
         private readonly userRepository: AbstractUserRepository,
         private readonly preUserRepository: AbstractPreUserRepository,
-        private readonly emailValidationRepository: AbstractEmailValidationRepository,
+        private readonly updateEmailCodeValidationUseCase: UpdateEmailCodeValidationUseCase
     ) {}
 
     async execute(data: IDataProps): Promise<void> {
@@ -28,11 +27,7 @@ export class ChangeValidationEmailUseCase {
 
         if (!preUser) throw new ErrorUserNotFound();
 
-        const emailValidation = await this.emailValidationRepository.findByUserEmail(preUser.email);
-        if (emailValidation) {
-            emailValidation.userEmail = data.newEmail;
-            await this.emailValidationRepository.save(emailValidation);
-        }
+        await this.updateEmailCodeValidationUseCase.execute({ newEmail: data.newEmail, oldEmail: preUser.email });
 
         preUser.email = data.newEmail;
         await this.preUserRepository.save(preUser);

@@ -1,74 +1,46 @@
 import { Injectable } from "@nestjs/common";
-import { EmailValidation } from "../../../entities/EmailValidation";
-import { Password } from "../../../entities/Password";
-import User from "../../../entities/User";
-import ErrorUserAlreadyCreated from "../../../errors/userAlreadyCreated";
-import AbstractEmailProvider from "../../../services/emailProvider";
-import AbstractEmailValidationRepository from "../../../repositories/emailValidation/emailValidationRepository";
-import AbstractUserRepository from "../../../repositories/userRepository/userRepository";
-import AbstractCryptoService from "../../../adapters/cryptoService";
-import { ValidationCode } from "../../../entities/ValidationCode";
-import AbstractPreUserRepository from "../../../repositories/preUserRepository/preUserRepository";
-import PreUser from "../../../entities/PreUser";
-import AbstractEmailValidationAttemptRepository from "../../../repositories/emailValidationAttempt/emailValidation/emailValidationAttempt";
+import AbstractEmailValidationRepository from "../../../repositories/validation/validationRepository";
+import AbstractUserRepository from "../../../repositories/user/userRepository";
+import ErrorWrongValidationCode from "../../../errors/wrongValidationCode";
+import ErrorUserNotFound from "../../../errors/userNotFound";
+import User from "../../../entities/User/User";
+import { AbstractAuthService } from "../../../services/AuthService";
+import AbstractPreUserRepository from "@applications/services/Client/repositories/preUser/preUserRepository";
 
-interface IDataProps {
-    name: string;
-    email: string;
-    password: string;
+interface ICreateAccountUseCaseParams {
+    preUserId: string;
+    validationCode: number;
 }
 
 @Injectable()
-export class CreateAccountUseCase {
-    constructor (
-        private readonly cryptoService: AbstractCryptoService, 
-        private readonly userRepository: AbstractUserRepository,
-        private readonly preUserRepository: AbstractPreUserRepository,
+export default class CreateAccountUseCase {
+    constructor(
         private readonly emailValidationRepository: AbstractEmailValidationRepository,
-        private readonly emailValidationAttemptRepository: AbstractEmailValidationAttemptRepository,
-        private readonly emailService: AbstractEmailProvider
+        private readonly preUserRepository: AbstractPreUserRepository,
+        private readonly userRepository: AbstractUserRepository,
+        private readonly authService: AbstractAuthService
     ) {}
+    
+    async execute({ preUserId, validationCode}: ICreateAccountUseCaseParams) {
+        const preUser = await this.preUserRepository.findById(preUserId);
+        
+        if (!preUser) throw new ErrorUserNotFound();
 
-    async execute(data: IDataProps): Promise<{ preUserId: string }> {
-        if (await this.userRepository.existsByEmail(data.email)) throw new ErrorUserAlreadyCreated("email");
-        if (await this.userRepository.existsByName(data.name)) throw new ErrorUserAlreadyCreated("name");
-        if (await this.preUserRepository.existsByName(data.name)) throw new ErrorUserAlreadyCreated("name");
+        const emailValidation = await this.emailValidationRepository.findByUserEmail(preUser.email);
 
-        if (await this.preUserRepository.existsByEmail(data.email)) {
-            await this.preUserRepository.deleteByEmail(data.email);
-        }
+        if (emailValidation == null || emailValidation.validationCode.value !== validationCode) 
+            throw new ErrorWrongValidationCode();
 
-        const preUser = new PreUser({ 
-            name: data.name, 
-            email: data.email,
-            password_hash: new Password(data.password, this.cryptoService)
-        });
-        await this.preUserRepository.save(preUser);
-
-        const emailValidationFounded = await this.emailValidationRepository.findByUserEmail(data.email);
-        let validationCode: ValidationCode;
-        if (emailValidationFounded) {
-            validationCode = emailValidationFounded.validationCode;
-
-            const emailValidationAttempt = await this.emailValidationAttemptRepository.findByEmailValidationId(emailValidationFounded.id);
-            emailValidationAttempt.addAttempt();
-            await this.emailValidationAttemptRepository.save(emailValidationAttempt);
-        }
-        else {
-            validationCode = new ValidationCode();
-            const emailValidation = new EmailValidation({
-                userEmail: data.email,
-                validationCode
-            });
-            await this.emailValidationRepository.save(emailValidation);
-        }
-
-        this.emailService.sendEmail({ 
-            destinyEmail: data.email, 
-            emailType: "emailConfirmation",
-            content: `Send this validation code: ${validationCode.value}`
+        const user = new User({
+            name: preUser.name,
+            email: preUser.email,
+            password_hash: preUser.password_hash
         });
 
-        return { preUserId: preUser.id };
+        await this.userRepository.save(user);
+
+        const userToken = await this.authService.makeLoginTokenToUser(user);
+
+        return userToken;
     }
 }
