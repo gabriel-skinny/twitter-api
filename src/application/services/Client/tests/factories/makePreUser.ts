@@ -1,5 +1,6 @@
-import { Password } from "../../entities/Password";
-import PreUser from "../../entities/PreUser";
+import { Password } from "../../entities/User/Password";
+import PreUser from "../../entities/User/preUser";
+
 
 export const makePreUser = (props?: Partial<PreUser>) => {
     return new PreUser({

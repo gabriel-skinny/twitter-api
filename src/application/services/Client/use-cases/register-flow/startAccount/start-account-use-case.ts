@@ -1,14 +1,11 @@
+import { OperationToValidateTypeEnum } from "@applications/services/Client/entities/Validation/Validation";
+import AbstractPreUserRepository from "@applications/services/Client/repositories/preUser/preUserRepository";
 import { Injectable } from "@nestjs/common";
-import { Password } from "../../../entities/Password";
 import ErrorUserAlreadyCreated from "../../../errors/userAlreadyCreated";
 import AbstractUserRepository from "../../../repositories/user/userRepository";
-import AbstractEmailProvider from "../../../services/emailProvider";
-import { ValidationCode } from "../../../entities/Validation/ValidationCode";
-import PreUser from "../../../entities/PreUser";
-import AbstractPreUserRepository from "@applications/services/Client/repositories/preUser/preUserRepository";
-import AbstractValidationRepository from "@applications/services/Client/repositories/validation/validationRepository";
-import AbstractValidationAttemptRepository from "@applications/services/Client/repositories/validationAttempt/validationAttempt";
-import { OperationToValidateTypeEnum, Validation } from "@applications/services/Client/entities/Validation/Validation";
+import { AbstractCreateValidationCodeUseCase, CreateValidationCodeUseCase } from "../../code-validation/create/create-validation-code";
+import PreUser from "@applications/services/Client/entities/User/preUser";
+import { Password } from "@applications/services/Client/entities/User/Password";
 
 interface IDataProps {
     name: string;
@@ -21,9 +18,7 @@ export class StartAccountUseCase {
     constructor (
         private readonly userRepository: AbstractUserRepository,
         private readonly preUserRepository: AbstractPreUserRepository,
-        private readonly validationRepository: AbstractValidationRepository,
-        private readonly validationAttemptRepository: AbstractValidationAttemptRepository,
-        private readonly emailService: AbstractEmailProvider
+        private readonly createValidationCodeUseCase: AbstractCreateValidationCodeUseCase
     ) {}
 
     async execute(data: IDataProps): Promise<{ preUserId: string }> {
@@ -42,30 +37,10 @@ export class StartAccountUseCase {
         });
         await this.preUserRepository.save(preUser);
 
-        const emailValidationFounded = await this.validationRepository.findByUserEmail(data.email);
-        let validationCode: ValidationCode;
-        if (emailValidationFounded) {
-            validationCode = emailValidationFounded.validationCode;
-
-            const emailValidationAttempt = await this.validationAttemptRepository.findByValidationId(emailValidationFounded.id);
-            emailValidationAttempt.addAttempt();
-            await this.validationAttemptRepository.save(emailValidationAttempt);
-        }
-        else {
-            validationCode = new ValidationCode();
-            const validation = new Validation({
-                userEmail: data.email,
-                validationCode,
-                operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIMATION
-            });
-            await this.validationRepository.save(validation);
-        }
-
-        this.emailService.sendEmail({ 
-            destinyEmail: data.email, 
-            emailType: "emailConfirmation",
-            content: `Send this validation code: ${validationCode.value}`
-        });
+        await this.createValidationCodeUseCase.execute({ 
+            email: data.email, 
+            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIRMATION 
+        })
 
         return { preUserId: preUser.id };
     }

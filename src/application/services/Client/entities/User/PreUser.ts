@@ -1,7 +1,8 @@
 import { randomUUID } from "crypto";
 import { Password } from "./Password";
 import { EXPIRES_PREUSER_IN_MINUTES } from "@constants/preUser";
-import { BaseExpiresIn } from "./baseExpiresIn";
+import { BaseExpiresIn } from "../base/baseExpiresIn";
+
 
 interface IPreUserProps {
     id?: string;

@@ -1,10 +1,7 @@
 
 import ErrorUserNotFound from "../../../errors/userNotFound";
-import ErrorWrongValidationCode from "../../../errors/wrongValidationCode";
-import InMemoryEmailValidationRepository from "../../../repositories/validation/InMemoryValidationRepository";
 
 import InMemoryPreUserRepositroy from "@applications/services/Client/repositories/preUser/inMemoryPreUserRepository";
-import { makeValidation } from "@applications/services/Client/tests/factories/makeValidation";
 import InMemoryUserRepositroy from "../../../repositories/user/inMemoryUserRepository";
 import AuthServiceStub from "../../../services/AuthServiceStub";
 import { makePreUser } from "../../../tests/factories/makePreUser";
@@ -13,29 +10,21 @@ import ValidateAccountUseCase from "./create-account-use-case";
 const makeUseCaseSut = () => {
     const preUserRepository = new InMemoryPreUserRepositroy();
     const userRepository = new InMemoryUserRepositroy();
-    const emailValidationRepository = new InMemoryEmailValidationRepository();
     const authService = new AuthServiceStub();
 
-    const validateAccountUseCase =  new ValidateAccountUseCase(emailValidationRepository, preUserRepository, userRepository, authService);
+    const validateAccountUseCase =  new ValidateAccountUseCase(preUserRepository, userRepository, authService);
     
-    return { validateAccountUseCase, preUserRepository, userRepository, emailValidationRepository};
+    return { validateAccountUseCase, preUserRepository, userRepository };
 }
 
 describe("Create Account Use Case", () => {
     it ("should validate and create the account of a user and return a user token", async () => {
-        const { validateAccountUseCase, userRepository, preUserRepository,emailValidationRepository } = makeUseCaseSut()
+        const { validateAccountUseCase, userRepository, preUserRepository  } = makeUseCaseSut()
         const preUser = makePreUser();
-        const emailValidation = makeValidation({
-            userEmail: preUser.email
-        })
 
         await preUserRepository.save(preUser);
-        await emailValidationRepository.save(emailValidation)
 
-        const userToken = await validateAccountUseCase.execute({ 
-            preUserId: preUser.id, 
-            validationCode: emailValidation.validationCode.value
-        });
+        const userToken = await validateAccountUseCase.execute(preUser.id);
 
         expect(userToken).toBeTruthy();
         expect(userRepository.userDatabase).toHaveLength(1);
@@ -46,43 +35,8 @@ describe("Create Account Use Case", () => {
     it ("should throw an error if user does not exists", async () => {
         const { validateAccountUseCase } = makeUseCaseSut()
 
-        const validateEmailPromisse = validateAccountUseCase.execute({ 
-            preUserId: "not-existing", 
-            validationCode: 10000
-        });
+        const validateEmailPromisse = validateAccountUseCase.execute("notExistsId");
 
         expect(validateEmailPromisse).rejects.toThrow(ErrorUserNotFound);
-    });
-
-    it ("should throw an error if email validation does not exists", async () => {
-        const { validateAccountUseCase, preUserRepository } = makeUseCaseSut()
-
-        const preUser = makePreUser();
-
-        await preUserRepository.save(preUser);
-
-        const validateAccountUseCasePromisse = validateAccountUseCase.execute({ 
-            preUserId: preUser.id, 
-            validationCode: 10000
-        });
-
-        expect(validateAccountUseCasePromisse).rejects.toThrow(ErrorWrongValidationCode);
-    });
-
-    it ("should throw an error if the emailValidationCode is wrong", async () => {
-        const { validateAccountUseCase, preUserRepository, emailValidationRepository } = makeUseCaseSut()
-
-        const preUser = makePreUser();
-        const emailValidation = makeValidation({  userEmail: preUser.email });
-
-        await preUserRepository.save(preUser);
-        await emailValidationRepository.save(emailValidation)
-
-        const validateAccountUseCasePromisse = validateAccountUseCase.execute({ 
-            preUserId: preUser.id, 
-            validationCode: 10000
-        });
-
-        expect(validateAccountUseCasePromisse).rejects.toThrow(ErrorWrongValidationCode);
     });
 })

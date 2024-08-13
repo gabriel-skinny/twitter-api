@@ -1,4 +1,5 @@
-import { Password } from "../../entities/Password";
+
+import { Password } from "../../entities/User/Password";
 import User from "../../entities/User/User";
 
 export const makeUser = (props?: Partial<User>) => {

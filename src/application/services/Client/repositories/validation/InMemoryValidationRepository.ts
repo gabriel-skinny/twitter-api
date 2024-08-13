@@ -1,4 +1,4 @@
-import { Validation } from "../../entities/Validation/Validation";
+import { OperationToValidateTypeEnum, Validation } from "../../entities/Validation/Validation";
 import AbstractValidationRepository from "./validationRepository";
 
 
@@ -9,8 +9,16 @@ export default class InMemoryValidationRepository implements AbstractValidationR
         this.validationDatabase.push(Validation);
     }
 
-    async findByUserEmail(userEmail: string): Promise<Validation> {
-      const validation = this.validationDatabase.find(validation => validation.userEmail == userEmail);
+    async findByEmail(email: string): Promise<Validation> {
+      const validation = this.validationDatabase.find(validation => validation.email == email);
+
+      if (!validation) return null;
+
+      return validation;
+    }
+
+    async findByEmailAndOperation(data: { email: string; operationToValidateType: OperationToValidateTypeEnum; }): Promise<Validation | null> {
+      const validation = this.validationDatabase.find(validation => validation.email == data.email && validation.operationToValidateType == data.operationToValidateType);
 
       if (!validation) return null;
 

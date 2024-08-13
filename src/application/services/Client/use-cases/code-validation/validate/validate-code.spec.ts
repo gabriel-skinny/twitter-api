@@ -20,15 +20,15 @@ describe("Validate code use-case", () => {
         const { validateCodeUseCase, validationRepository } = makeUseCaseSut();
 
         const validation = makeValidation({
-            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIMATION
+            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIRMATION
         })
         await validationRepository.save(validation);
 
         
         const jwtToken = await validateCodeUseCase.execute({ 
-            userEmail: validation.userEmail,
+            email: validation.email,
             validationCode: validation.validationCode.value,
-            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIMATION
+            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIRMATION
         })
 
         expect(jwtToken).toBeTruthy();
@@ -45,7 +45,7 @@ describe("Validate code use-case", () => {
 
         
         const jwtToken = await validateCodeUseCase.execute({ 
-            userEmail: validation.userEmail,
+            email: validation.email,
             validationCode: validation.validationCode.value,
             operationToValidateType: OperationToValidateTypeEnum.PASSWORD_CHANGE
         })
@@ -58,12 +58,12 @@ describe("Validate code use-case", () => {
         const { validateCodeUseCase, validationRepository } = makeUseCaseSut();
 
         const validateUseCasePromise = validateCodeUseCase.execute({ 
-            userEmail: "nonExisting@gmail.com",
+            email: "nonExisting@gmail.com",
             validationCode: 100,
-            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIMATION 
+            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIRMATION 
         })
 
-        expect(validateUseCasePromise).rejects.toStrictEqual(new Error("Validation does not exists for that user"));
+        expect(validateUseCasePromise).rejects.toStrictEqual(new Error("Validation does not exists for that email"));
     })
 
     it ("should throw an error with validation code is wrong", async () => {
@@ -74,25 +74,9 @@ describe("Validate code use-case", () => {
 
         
         const validateCodeUseCasePromise = validateCodeUseCase.execute({ 
-            userEmail: validation.userEmail,
+            email: validation.email,
             validationCode: 1000,
             operationToValidateType: validation.operationToValidateType
-        })
-
-        expect(validateCodeUseCasePromise).rejects.toStrictEqual(new Error("Wrong validation code"));
-    })
-
-    it ("should throw an error with operationToValidateType is wrong", async () => {
-        const { validateCodeUseCase, validationRepository } = makeUseCaseSut();
-
-        const validation = makeValidation()
-        await validationRepository.save(validation);
-
-        
-        const validateCodeUseCasePromise = validateCodeUseCase.execute({ 
-            userEmail: validation.userEmail,
-            validationCode: validation.validationCode.value,
-            operationToValidateType: "InvalidOperationType" as any
         })
 
         expect(validateCodeUseCasePromise).rejects.toStrictEqual(new Error("Wrong validation code"));

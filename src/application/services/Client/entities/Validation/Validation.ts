@@ -5,7 +5,7 @@ import { BaseExpiresIn } from "../base/baseExpiresIn";
 import { ValidationAttempt } from "./ValidationAttempt";
 
 export enum OperationToValidateTypeEnum {
-	EMAIL_CONFIMATION = "email_confirmation",
+	EMAIL_CONFIRMATION = "email_confirmation",
 	PASSWORD_CHANGE = "password_change"
 }
 
@@ -13,7 +13,7 @@ interface IValidationProps {
 	id?: string;
 	validated?: boolean;
 	operationToValidateType: OperationToValidateTypeEnum; 
-    userEmail: string;
+    email: string;
     validationCode: ValidationCode;
 	validationAttempt?: ValidationAttempt;
 	expirationIn?: number;
@@ -59,12 +59,12 @@ export class Validation extends BaseExpiresIn{
 	return this._validated;
  }
 
- public get userEmail() {
-	return this.rawValues.userEmail;
+ public get email() {
+	return this.rawValues.email;
  }
 
- public set userEmail(email: string) {
-	this.rawValues.userEmail = email;
+ public set email(email: string) {
+	this.rawValues.email = email;
  }
 
  public get validationCode() {

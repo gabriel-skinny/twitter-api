@@ -1,4 +1,5 @@
-import PreUser from "../../entities/PreUser";
+
+import PreUser from "../../entities/User/preUser";
 import AbstractPreUserRepository from "./preUserRepository";
 
 

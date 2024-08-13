@@ -1,41 +1,31 @@
-import { EmailValidation } from "../../../entities/Validation/Validation";
-import { EmailValidationAttempt } from "../../../entities/Validation/ValidationAttempt";
-import { ValidationCode } from "../../../entities/Validation/ValidationCode";
+import InMemoryPreUserRepositroy from "@applications/services/Client/repositories/preUser/inMemoryPreUserRepository";
 import ErrorUserAlreadyCreated from "../../../errors/userAlreadyCreated";
-import EmailProviderStub from "../../../services/emailProviderStub";
-import InMemoryEmailValidationRepository from "../../../repositories/validation/InMemoryValidationRepository";
-import InMemoryEmailValidationAttemptRepository from "../../../repositories/validationAttempt/inMemoryValidationAttempt";
-import InMemoryPreUserRepositroy from "../../../repositories/preUserRepository/inMemoryPreUserRepository";
 import InMemoryUserRepositroy from "../../../repositories/user/inMemoryUserRepository";
 import { makePreUser } from "../../../tests/factories/makePreUser";
 import { makeUser } from "../../../tests/factories/makeUser";
-import CryptoServiceStub from "../../../adapters/cryptoServiceStub";
-import { CreateAccountUseCase } from "./start-account-use-case";
+import { CreateValidationCodeMock } from "../../code-validation/create/create-validation-code-mock";
+import { StartAccountUseCase } from "./start-account-use-case";
 
 const makeUseCaseSut = () => {
-    const cryptoService = new CryptoServiceStub(); 
     const userRepository = new InMemoryUserRepositroy();
     const preUserRepository = new InMemoryPreUserRepositroy();
-    const emailValidationAttemptRepository = new InMemoryEmailValidationAttemptRepository();
-    const emailValidationRepository = new InMemoryEmailValidationRepository();
-    const emailProvider = new EmailProviderStub();
-    
-    const createAccountUseCase =  new CreateAccountUseCase(
-        cryptoService, 
+    const createValidationCodeUseCase =  new CreateValidationCodeMock();
+
+    const createAccountUseCase =  new StartAccountUseCase(
         userRepository, 
-        preUserRepository, 
-        emailValidationRepository,
-        emailValidationAttemptRepository,  
-        emailProvider);
+        preUserRepository,
+        createValidationCodeUseCase
+    );
     
-    return { cryptoService, preUserRepository, emailValidationAttemptRepository, emailProvider, emailValidationRepository, userRepository, createAccountUseCase };
+    return { createAccountUseCase, userRepository, preUserRepository, createValidationCodeUseCase };
 }
 
 describe("Create Account Use Case", () => {
-    describe("sucess cases", () => {
-        it ("should create a preUser", async () => {
-            const { createAccountUseCase, preUserRepository } = makeUseCaseSut()
-            
+    it ("should create a preUser", async () => {
+            const { createAccountUseCase, preUserRepository, createValidationCodeUseCase } = makeUseCaseSut()
+
+            createValidationCodeUseCase.execute = jest.fn();
+
             await createAccountUseCase.execute({
                 email: "gabriel@gmail.com",
                 name: "gabriel",
@@ -43,44 +33,9 @@ describe("Create Account Use Case", () => {
             });
     
             expect(preUserRepository.preUserDatabase).toHaveLength(1);
+            expect(createValidationCodeUseCase.execute).toHaveBeenCalled();
         });
-    
-        it ("should Create a email Validation if preUser has none created", async () => {
-            const { createAccountUseCase, emailValidationRepository } = makeUseCaseSut()
-            
-            await createAccountUseCase.execute({
-                email: "gabriel@gmail.com",
-                name: "gabriel",
-                password: "teste"
-            });
-    
-            expect(emailValidationRepository.emailValidationDatabase).toHaveLength(1);
-        });
-
-        it ("Should send an email with the rigth data", async () => {
-            const { createAccountUseCase, emailValidationRepository, emailProvider } = makeUseCaseSut()
-            
-            emailProvider.sendEmail = jest.fn();
-
-            const emailCreated = "gabriel@gmail.com";
-            await createAccountUseCase.execute({
-                email: emailCreated,
-                name: "gabriel",
-                password: "teste"
-            });
-
-            const emailValidationCreated = emailValidationRepository.emailValidationDatabase[0];
-    
-            expect(emailProvider.sendEmail).toHaveBeenCalledWith({ 
-                destinyEmail: emailCreated, 
-                emailType: "emailConfirmation",
-                content: `Send this validation code: ${emailValidationCreated.validationCode.value}`
-            });
-        })
-    })
-
-    describe("Exceptions cases", () => {
-        it("should not be able to create a preUser with a used email", async () => {
+    it("should not be able to create a preUser with a used email", async () => {
             const { createAccountUseCase, userRepository } = makeUseCaseSut()
             
             const usedEmail = "duplicatedEmail@gmail.com";
@@ -150,38 +105,4 @@ describe("Create Account Use Case", () => {
             expect(preUserRepository.preUserDatabase).toHaveLength(1); 
             expect(preUserRepository.preUserDatabase[0].id).not.toBe(preUser.id);
         });
-
-        it("should used already created validation code and update emailValidationAttemp", async () => {
-            const { createAccountUseCase, emailValidationRepository, emailValidationAttemptRepository, emailProvider } = makeUseCaseSut()
-            emailProvider.sendEmail = jest.fn();
-
-            const usedEmail = "usedEmail@gmail.com";
-            const usedValidationCode = new ValidationCode(123456);
-            const emailValidation = new EmailValidation({
-                userEmail: usedEmail,
-                validationCode: usedValidationCode,
-            })
-            await emailValidationRepository.save(emailValidation);
-
-            const emailValidationAttempt = new EmailValidationAttempt({
-                emailValidationId: emailValidation.id, 
-            })
-            await emailValidationAttemptRepository.save(emailValidationAttempt);
-    
-            await createAccountUseCase.execute({
-                email: usedEmail,
-                name: "rightName",
-                password: "pass"
-            });
-            
-    
-            expect(emailValidationRepository.emailValidationDatabase).toHaveLength(1); 
-            expect(emailValidationAttemptRepository.emailValidationAttempDatabase[0].attempts).toBe(1);
-            expect(emailProvider.sendEmail).toHaveBeenCalledWith({ 
-                destinyEmail: usedEmail, 
-                emailType: "emailConfirmation",
-                content: `Send this validation code: ${usedValidationCode.value}`
-            });
-        });
-    })
 })

@@ -1,13 +1,30 @@
+import { OperationToValidateTypeEnum } from "@applications/services/Client/entities/Validation/Validation";
 import AbstractValidationRepository from "../../../repositories/validation/validationRepository";
 
-export default class UpdateEmailCodeValidationUseCase {
-    constructor(private readonly validationRepository: AbstractValidationRepository) {}
+export interface IUpdateEmailCodeValidationUseCaseParams {
+    newEmail: string; 
+    oldEmail: string;
+    operationToValidateType: OperationToValidateTypeEnum;
+}
+
+export abstract class AbstractUpdateEmailCodeValidationUseCase {
+    abstract execute(data: IUpdateEmailCodeValidationUseCaseParams): Promise<void>;
+}
+
+export class UpdateEmailCodeValidationUseCase extends AbstractUpdateEmailCodeValidationUseCase {
+    constructor(private readonly validationRepository: AbstractValidationRepository) {
+        super();
+    }
     
-    async execute({ newEmail, oldEmail }: {newEmail: string; oldEmail: string}) {
-        const emailValidation = await this.validationRepository.findByUserEmail(oldEmail);
-        if (emailValidation) {
-            emailValidation.userEmail = newEmail;
-            await this.validationRepository.save(emailValidation);
-        }
+    async execute({ newEmail, oldEmail, operationToValidateType }: IUpdateEmailCodeValidationUseCaseParams) {
+        const validation = await this.validationRepository.findByEmailAndOperation({
+            email: oldEmail,
+            operationToValidateType
+        });
+        
+        if (!validation) throw new Error("That validation does not exists for that email")
+            
+        validation.email = newEmail;
+        await this.validationRepository.save(validation);
     }
 }

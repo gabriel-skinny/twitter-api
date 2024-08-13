@@ -3,7 +3,7 @@ import AbstractValidationRepository from "../../../repositories/validation/valid
 import { AbstractAuthService, TokenTypeEnum } from "../../../services/AuthService";
 
 interface IValidateCodeUseCaseParams {
-    userEmail: string;
+    email: string;
     validationCode: number;
     operationToValidateType : OperationToValidateTypeEnum
 }
@@ -18,24 +18,25 @@ export default class ValidateCodeUseCase {
         private readonly authService: AbstractAuthService
     ) {}
 
-    async execute({ userEmail, validationCode, operationToValidateType }: IValidateCodeUseCaseParams): Promise<IValidateCodeUseCaseReturn> {
-        const validation = await this.validationRepository.findByUserEmail(userEmail);
+    async execute({ email, validationCode, operationToValidateType }: IValidateCodeUseCaseParams): Promise<IValidateCodeUseCaseReturn> {
+        const validation = await this.validationRepository.findByEmailAndOperation({
+            email,
+            operationToValidateType
+        });
 
-        if (!validation) throw new Error("Validation does not exists for that user");
+        if (!validation) throw new Error("Validation does not exists for that email");
 
-        if (validation.validationCode.value != validationCode || 
-            validation.operationToValidateType != operationToValidateType
-        ) 
+        if (validation.validationCode.value != validationCode) 
             throw new Error("Wrong validation code");
 
         let jwtToken: string;
         switch(operationToValidateType) {
-            case OperationToValidateTypeEnum.EMAIL_CONFIMATION: {
-                jwtToken = await this.authService.makeToken({ tokenType: TokenTypeEnum.EMAIL_CONFIMATION, userEmail })
+            case OperationToValidateTypeEnum.EMAIL_CONFIRMATION: {
+                jwtToken = await this.authService.makeToken({ tokenType: TokenTypeEnum.EMAIL_CONFIRMATION, userEmail: email })
                 break;
             }
             case OperationToValidateTypeEnum.PASSWORD_CHANGE: {
-                jwtToken = await this.authService.makeToken({ tokenType: TokenTypeEnum.PASSWORD_CHANGE, userEmail });
+                jwtToken = await this.authService.makeToken({ tokenType: TokenTypeEnum.PASSWORD_CHANGE, userEmail: email });
                 break;
             }
 

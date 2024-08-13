@@ -3,7 +3,7 @@ import User from "../entities/User/User";
 export enum TokenTypeEnum {
     LOGIN = "login",
     PASSWORD_CHANGE = "password_change",
-    EMAIL_CONFIMATION = "email_confirmation"
+    EMAIL_CONFIRMATION = "email_confirmation"
 }
 
 export abstract class AbstractAuthService {
