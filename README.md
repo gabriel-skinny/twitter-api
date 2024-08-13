@@ -122,6 +122,8 @@ Conclusões:
 
 ### Feature: Um Ip só poderá enviar 10 requisições no intervalo de 5 minutos
 
+- Em rotas pesadas punir os ips mais severamente
+
 ## Cliente-Service
 
 ### Feature: Usuario consegue criar sua conta (check)
@@ -154,10 +156,12 @@ Conclusões:
   - Atualiza o emailValidation do preUser se ele existe
 - Cache: Redis
 
-### Feature: Validação de email e criação de conta
+### Feature: Validação de email e Criação de conta
 
 - Cliente: Request HTTP
-- Api: validateAccount(preUserId, validationCode): token
+- Api: validateCode(userEmail, validationCode, operationValidatedType): createAccountJWT
+- Rota autenticada com JWT para criação
+- Api: createAccount(preUserId): JWTLogin
   - Verfica se o preUser existe
   - Verifica a validade do código e sua correspondencia
   - Cria usuario
@@ -175,13 +179,6 @@ Conclusões:
     - Cria um novo registro de Validação de email
     - Envia um email com ele
 - Cache: Redis
-
-### Feature: Expiração da Confirmação de email
-
-- Cron: roda a cada 2 horas cancelando todos os códigos não utilizados no banco
-- Api: expireEmailConfirmation()
-  - Verifica todos os registros do validação de email com o validated: false e que tem o criado_em com mais de 2 horas
-- Banco: MongoDb
 
 ### Feature: Login
 
@@ -203,6 +200,29 @@ Conclusões:
   - Baixa foto na S3
   - Deixa disponivel no CDN
 - Api: registerUserInfo(bannerPictureS3Url, profilePictureS3Url, bio, location, website, birthDate, profileName)
+
+### Feature: Usuario consegue alterar sua senha
+
+- Cliente: Request HTTP
+- Rota: Autenticada
+- Api: validatePassword(password): passwordUpdateJWT
+- Rota: Autenticada para password update
+- Api: updatePassword(userId, newPassword)
+  - Verifica se o usuario existe
+  - Verifica se a password antiga passada bate com a salva no banco
+  - Verifica se a nova senha é diferente da antiga
+  - Verifica se a nova senha é diferente de
+  - Atualiza a password da senha
+
+### Feature: Usuario consegue recuperar sua senha esquecida
+
+- Cliente: Request HTTP
+- Rota: Autenticada
+- Api: forgotPassword(userEmail)
+  - Verifica se usuario existe
+  - Verifica se já existe um código de validação enviado para alterar a senha
+  - Se sim: Envia email com mesmo código de validação
+  - Se não: Envia novo email com novo código de validação
 
 ## Profile-Service
 
