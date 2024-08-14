@@ -4,6 +4,7 @@ import ErrorUserAlreadyCreated from "../../../errors/userAlreadyCreated";
 import ErrorUserNotFound from "../../../errors/userNotFound";
 import AbstractUserRepository from "../../../repositories/user/userRepository";
 import { AbstractUpdateEmailCodeValidationUseCase } from "../../code-validation/update-email/update-email-use-case";
+import { OperationToValidateTypeEnum } from "@applications/services/Client/entities/Validation/Validation";
 
 interface IDataProps {
     preUserId: string;
@@ -26,7 +27,11 @@ export class UpdatePreUserEmailUseCase {
 
         if (!preUser) throw new ErrorUserNotFound();
 
-        await this.updateEmailCodeValidationUseCase.execute({ newEmail: data.newEmail, oldEmail: preUser.email });
+        await this.updateEmailCodeValidationUseCase.execute({ 
+            newEmail: data.newEmail, 
+            oldEmail: preUser.email,
+            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIRMATION 
+        });
 
         preUser.email = data.newEmail;
         await this.preUserRepository.save(preUser);

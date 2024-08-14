@@ -1,36 +1,15 @@
-import CryptoServiceStub from "../adapters/cryptoServiceStub";
+import { makePreUser } from "../../tests/factories/makePreUser";
 import { Password } from "./Password";
-import PreUser from "./preUser";
 
 describe("PreUser entity test", () => {
     it ("should create a PreUser", () => {
-        const cryptoServiceStub = new CryptoServiceStub();
-        const passwordSent = "hashedValue"
-        const password =  new Password(passwordSent, cryptoServiceStub)
-        
-        const userData = {
-            email: "teste@gmail",
-            name: "name",
-            password_hash: password
-        }
-        
-        const preUser =  new PreUser(userData)
+        const preUser =  makePreUser();
         
         expect(preUser).toBeTruthy();
     })
 
-    it ("should have all values", () => {
-        const cryptoServiceStub = new CryptoServiceStub();
-        const passwordSent = "hashedValue"
-        const password =  new Password(passwordSent, cryptoServiceStub)
-        
-        const userData = {
-            email: "teste@gmail",
-            name: "name",
-            password_hash: password
-        }
-        
-        const preUser =  new PreUser(userData)
+    it ("should have all values", () => {        
+        const preUser = makePreUser();
         
         expect(preUser.id).toBeTruthy();
         expect(preUser.email).toBeTruthy();
