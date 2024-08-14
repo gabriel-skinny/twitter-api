@@ -75,6 +75,10 @@ export default class User {
         return this.rawValues.password_hash;
     }
 
+    public set password_hash(password_hash: Password) {
+        this.rawValues.password_hash = password_hash;
+    }
+
     public updateFields(data: IUpdateFields) {
         if(data.bio) this.rawValues.bio = data.bio;
         if(data.bannerS3Url) this.rawValues.bannerS3Url = data.bannerS3Url;

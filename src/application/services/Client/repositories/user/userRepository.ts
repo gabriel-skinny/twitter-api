@@ -6,4 +6,5 @@ export default abstract class AbstractUserRepository {
     abstract existsByName(name: string): Promise<boolean>;
     abstract findById(id: string): Promise<User | null>;
     abstract findByEmail(email: string): Promise<User | null>;
+    abstract delete(id: string): Promise<void>;
 }

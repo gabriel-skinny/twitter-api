@@ -1,30 +1,29 @@
-import InMemoryLoginAttemptRepository from "@applications/services/Client/repositories/loginAttempt/InMemoryLoginAttemptRepository";
-import LoginUseCase from "./login-use-case";
+import { Password } from "@applications/services/Client/entities/User/Password";
+import { SessionDeviceTypesEnum } from "@applications/services/Client/entities/User/Session";
+import ErrorUserNotFound from "@applications/services/Client/errors/userNotFound";
+import InMemoryUserSessionRepository from "@applications/services/Client/repositories/session/inMemorySessionRepository";
 import InMemoryUserRepositroy from "@applications/services/Client/repositories/user/inMemoryUserRepository";
 import AuthServiceStub from "@applications/services/Client/services/AuthServiceStub";
 import { makeUser } from "@applications/services/Client/tests/factories/makeUser";
-import { Password } from "@applications/services/Client/entities/Password";
-import { LoginAttempt } from "@applications/services/Client/entities/LoginAttempt";
-import { MAX_RETRIS_LOGIN_ATTEMPT } from "@constants/loginAttempt";
-import ErrorUserNotFound from "@applications/services/Client/errors/userNotFound";
+import LoginUseCase from "./login-use-case";
 
 const makeUseCaseSut = () => {
-    const loginAttemptRepository = new InMemoryLoginAttemptRepository(); 
     const userRepository = new InMemoryUserRepositroy();
     const authService = new AuthServiceStub();
+    const userSessionRepository = new InMemoryUserSessionRepository();
     
-    
-    const loginUseCase =  new LoginUseCase(
-        loginAttemptRepository, 
+    const loginUseCase =  new LoginUseCase( 
         userRepository, 
-        authService);
+        authService,
+        userSessionRepository
+    );
     
-    return { loginUseCase, loginAttemptRepository, userRepository, authService};
+    return { loginUseCase, userRepository, authService, userSessionRepository };
 }
 
 describe("Login use-case", () => {
-    it ("Should return a login token to the user", async () => {
-        const { loginUseCase, userRepository } = makeUseCaseSut();
+    it ("Should create a user session and return a login token to the user", async () => {
+        const { loginUseCase, userRepository, userSessionRepository } = makeUseCaseSut();
 
         const usedPassword = "password";
         const user = makeUser({ password_hash: new Password(usedPassword)});
@@ -32,36 +31,13 @@ describe("Login use-case", () => {
 
         const userToken = await loginUseCase.execute({
             email: user.email,
-            password: "password"
+            password: "password",
+            ip: "124.20.02",
+            deviceType: SessionDeviceTypesEnum.DESKTOP
         });
 
         expect(userToken).toBeTruthy();
-    });
-
-    it ("Should throw an error when loginAtempt is more than the defined", async () => {
-        const { loginUseCase, userRepository, loginAttemptRepository } = makeUseCaseSut();
-
-        const usedPassword = "password";
-        const user = makeUser({ password_hash: new Password(usedPassword)});
-        await userRepository.save(user);
-
-       for (let i = 0; i <= MAX_RETRIS_LOGIN_ATTEMPT; i++) {
-            try {
-                await loginUseCase.execute({
-                    email: user.email,
-                    password: "WrongPassword"
-                    });
-            } catch (error) {}
-        }
-
-       const maxRetriesLoginPromise = loginUseCase.execute({
-        email: user.email,
-        password: "WrongPassword"
-        })
-
-        expect(maxRetriesLoginPromise).rejects
-        .toStrictEqual(new Error(`Too much login retries. Wait ${loginAttemptRepository.loginAttemptDatabase[0].expiresIn} minutes to retry`));
-        expect(loginAttemptRepository.loginAttemptDatabase[0].attempts).toBe(10);
+        expect(userSessionRepository.userSessionDatabase).toHaveLength(1);
     });
 
     it ("Should error with none users exists with that email", async () => {
@@ -69,7 +45,9 @@ describe("Login use-case", () => {
 
         const loginUseCasePromise = loginUseCase.execute({
             email: "nonExistingemail@gmail.com",
-            password: "password"
+            password: "password",
+            ip: "123.131",
+            deviceType: SessionDeviceTypesEnum.DESKTOP
         });
 
         expect(loginUseCasePromise).rejects.toThrow(ErrorUserNotFound);
@@ -84,54 +62,11 @@ describe("Login use-case", () => {
 
         const loginUsePromise = loginUseCase.execute({
             email: user.email,
-            password: "WrongPassword"
+            password: "WrongPassword",
+            ip: "123.131",
+            deviceType: SessionDeviceTypesEnum.DESKTOP
         });
 
         expect(loginUsePromise).rejects.toStrictEqual(new Error("Wrong password"));
-    });
-
-    it ("Should create an login attempt when the password of the user is wrong", async () => {
-        const { loginUseCase, userRepository, loginAttemptRepository } = makeUseCaseSut();
-
-        const usedPassword = "password";
-        const user = makeUser({ password_hash: new Password(usedPassword)});
-        await userRepository.save(user);
-
-        try {
-            await loginUseCase.execute({
-                email: user.email,
-                password: "WrongPassword"
-            });
-        } catch (error) {}
-
-        expect(loginAttemptRepository.loginAttemptDatabase[0].userEmail).toBe(user.email);
-    });
-
-    it ("Should add atempt to a login attempt when the password of the user is wrong", async () => {
-        const { loginUseCase, userRepository, loginAttemptRepository } = makeUseCaseSut();
-
-        const usedPassword = "password";
-        const user = makeUser({ password_hash: new Password(usedPassword)});
-        await userRepository.save(user);
-
-       try {
-        await  loginUseCase.execute({
-            email: user.email,
-            password: "WrongPassword"
-        })
-       } catch (error) {
-            try {
-                await loginUseCase.execute({
-                    email: user.email,
-                    password: "WrongPassword"
-                })
-            } catch (error) {}
-       }
-        
-        
-        expect(loginAttemptRepository.loginAttemptDatabase[0].userEmail).toBe(user.email);
-        expect(loginAttemptRepository.loginAttemptDatabase).toHaveLength(1);
-        expect(loginAttemptRepository.loginAttemptDatabase[0].attempts).toBe(1);
-        
     });
 })

@@ -2,8 +2,7 @@ import User from "../../entities/User/User";
 import AbstractUserRepository from "./userRepository";
 
 
-export default class InMemoryUserRepositroy implements AbstractUserRepository {
-   
+export default class InMemoryUserRepositroy implements AbstractUserRepository {   
     public userDatabase: User[] = [];
     
     async save(user: User): Promise<void> {
@@ -31,5 +30,9 @@ export default class InMemoryUserRepositroy implements AbstractUserRepository {
         if (!user) return null
 
         return user;
+    }
+
+    async delete(id: string): Promise<void> {
+        this.userDatabase = this.userDatabase.filter(u => u.id !== id);
     }
 }

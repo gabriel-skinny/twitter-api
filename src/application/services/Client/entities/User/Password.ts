@@ -12,7 +12,7 @@ export class Password {
         else this._password = this.setPasswordHash(password);
     }
 
-    public setPasswordHash(password: string) {
+    private setPasswordHash(password: string) {
         return this._cryptoService.hash(password);
     }
 
