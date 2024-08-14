@@ -1,11 +1,17 @@
 import AbstractUserSessionRepository from "@applications/services/Client/repositories/session/sessionRepository";
 
-export default class LogoutUseCase {
+export interface ILogoutUseCaseParams { userId: string, ip: string }
+
+export abstract class AbstractLogoutUseCase {
+    abstract execute(data: ILogoutUseCaseParams): Promise<void>
+}
+
+export default class LogoutUseCase extends AbstractLogoutUseCase {
     constructor (
         private readonly userSessionRepository: AbstractUserSessionRepository 
-    ) {}
+    ) { super() }
 
-    async execute({ userId, ip }: { userId: string, ip: string }) {
+    async execute({ userId, ip }: ILogoutUseCaseParams) {
         const userSession = await this.userSessionRepository.findByUserIdAndIp({
             userId,
             ip
