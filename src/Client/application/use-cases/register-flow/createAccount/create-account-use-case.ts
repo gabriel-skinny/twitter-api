@@ -14,7 +14,7 @@ export default class CreateAccountUseCase {
         private readonly authService: AbstractAuthService
     ) {}
     
-    async execute( preUserId: string) {
+    async execute(preUserId: string): Promise<{ loginToken: string }> {
         const preUser = await this.preUserRepository.findById(preUserId);
         
         if (!preUser) throw new ErrorUserNotFound();
@@ -27,8 +27,8 @@ export default class CreateAccountUseCase {
 
         await this.userRepository.save(user);
 
-        const userToken = await this.authService.makeLoginTokenToUser(user);
+        const loginToken = await this.authService.makeLoginTokenToUser(user);
 
-        return userToken;
+        return { loginToken };
     }
 }

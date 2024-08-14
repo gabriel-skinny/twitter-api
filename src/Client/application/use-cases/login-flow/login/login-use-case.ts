@@ -21,7 +21,7 @@ export default class LoginUseCase {
         private readonly userSessionRepository: AbstractSessionRepository
     ) {}
 
-    async execute({ email, password, ip, deviceType }: ILoginUseCaseParams): Promise<{ userToken: string }> {
+    async execute({ email, password, ip, deviceType }: ILoginUseCaseParams): Promise<{ loginToken: string }> {
         const user = await this.userRepository.findByEmail(email);
 
         if (!user) throw new ErrorUserNotFound();
@@ -36,8 +36,8 @@ export default class LoginUseCase {
         
         await this.userSessionRepository.save(userSession);
 
-        const userToken = await this.authService.makeLoginTokenToUser(user);
+        const loginToken = await this.authService.makeLoginTokenToUser(user);
 
-        return { userToken }
+        return { loginToken }
     }
 }
