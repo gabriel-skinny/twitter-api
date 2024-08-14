@@ -12,6 +12,8 @@ const config: Config = {
         prefix: "<rootDir>/"
     }),
     "testRegex": ".*\\.spec\\.ts$",
+    rootDir: './',
+    modulePaths: ['<rootDir>'],
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },

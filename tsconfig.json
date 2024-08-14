@@ -21,9 +21,9 @@
     "paths": {
       "src": ["./src"],
       "@applications/*": ["./src/application/*"],
-      "@helpers/*": ["./src/helpers/*"],
-      "@infra/*": ["./src/infra/*"],
-      "@constants/*": ["./src/constants/*"]
+      "@helpers/*": ["src/Shared/helpers/*"],
+      "@infra/*": ["src/Client/infra/*"],
+      "@constants/*": ["src/Client/application/constants/*"]
     }
   }
 }
