@@ -40,7 +40,7 @@ Cadastro:
 Login:
 
 - Usuario consegue logar
-- Usuario consegue preencher editar dados de perfil
+- Usuario consegue editar dados de perfil
 - Usuario consegue editar a senha quando esquecida
 - Usuario consegue deletar seu perfil
 
