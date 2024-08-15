@@ -3,11 +3,14 @@ import { Model as MongoModel } from 'mongoose';
 export default class BaseRepository<Model extends Record<any, any>, Entity> {
   constructor(
     private mongoModel: MongoModel<Model>,
-    private modelMapper: (data: Model) => Entity,
+    private modelToRawMapper: (data: Model) => Entity,
+    private rawToModelMapper: (data: Partial<Entity>) => Model,
   ) {}
 
-  async save(data: Entity): Promise<void> {
-    await this.mongoModel.create(data);
+  async save(rawEntity: Entity): Promise<void> {
+    const model = this.rawToModelMapper(rawEntity);
+
+    await this.mongoModel.create(model);
   }
 
   async findById(id: string): Promise<Entity | null> {
@@ -15,7 +18,13 @@ export default class BaseRepository<Model extends Record<any, any>, Entity> {
 
     if (!userModel) return null;
 
-    return this.modelMapper(userModel);
+    return this.modelToRawMapper(userModel);
+  }
+
+  async updateById({ id, data }: { id: string; data: Partial<Entity> }) {
+    const model = this.rawToModelMapper(data);
+
+    await this.mongoModel.updateOne({ id }, model);
   }
 
   async delete(id: string): Promise<void> {

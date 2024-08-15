@@ -5,7 +5,10 @@ import BaseRepository from './baseRepository';
 import { UserSessionModel } from '../mongodb/schemas/userSession';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { preUserSessionModelToRaw } from '../mappers/userSession';
+import {
+  preUserSessionModelToRaw,
+  preUserSessionToModel,
+} from '../mappers/userSession';
 
 export interface IFindAllUserSessionsByUserIdWhereNotParams<
   T extends keyof UserSession,
@@ -24,7 +27,7 @@ export default class UserSessionRepository
     @InjectModel(UserSessionModel.name)
     private userSessionModel: Model<UserSessionModel>,
   ) {
-    super(userSessionModel, preUserSessionModelToRaw);
+    super(userSessionModel, preUserSessionModelToRaw, preUserSessionToModel);
   }
 
   async findByUserIdAndIp({
@@ -51,13 +54,13 @@ export default class UserSessionRepository
   }: IFindAllUserSessionsByUserIdWhereNotParams<T>): Promise<
     { [P in T]: UserSession[P] }[] | null
   > {
-    const userSessionModel = await this.userSessionModel.find({
+    const userSessionModel = await this.userSessionModel.findOne({
       userId,
       $where: `$not: {${whereNot}}`,
     });
 
     if (!userSessionModel) return null;
 
-    return preUserSessionModelToRaw(userSessionModel);
+    return preUserSessionModelToRaw(userSessionModel) as any;
   }
 }

@@ -1,7 +1,7 @@
 import UserSession from 'src/Client/application/entities/User/Session';
 import { UserSessionModel } from '../mongodb/schemas/userSession';
 
-export const preUserSessionToModel = (userSession: UserSession) => {
+export const preUserSessionToModel = (userSession: Partial<UserSession>) => {
   return new UserSessionModel({
     id: userSession.id,
     userId: userSession.userId,

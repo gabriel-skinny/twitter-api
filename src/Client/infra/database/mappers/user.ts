@@ -2,7 +2,7 @@ import User from 'src/Client/application/entities/User/User';
 import { UserModel } from '../mongodb/schemas/user';
 import { Password } from 'src/Client/application/entities/User/Password';
 
-export const userToUserModel = (user: User) => {
+export function userToUserModel(user: Partial<User>): UserModel {
   return new UserModel({
     id: user.id,
     email: user.email,
@@ -16,9 +16,9 @@ export const userToUserModel = (user: User) => {
     profilePictureS3Url: user.profilePictureS3Url,
     website: user.website,
   });
-};
+}
 
-export const userModelToUser = (userModel: UserModel) => {
+export function userModelToRaw(userModel: UserModel) {
   return new User({
     id: userModel.id,
     email: userModel.email,
@@ -32,4 +32,4 @@ export const userModelToUser = (userModel: UserModel) => {
     profilePictureS3Url: userModel.profilePictureS3Url,
     website: userModel.website,
   });
-};
+}

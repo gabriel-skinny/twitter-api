@@ -3,19 +3,19 @@ import User from 'src/Client/application/entities/User/User';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 import { UserModel } from '../mongodb/schemas/user';
 import { Model } from 'mongoose';
-import { userModelToUser, userToUserModel } from '../mappers/user';
+import { userModelToRaw, userToUserModel } from '../mappers/user';
 import { Injectable } from '@nestjs/common';
+import BaseRepository from './baseRepository';
 
 @Injectable()
-export default class UserRepository implements AbstractUserRepository {
+export default class UserRepository
+  extends BaseRepository<UserModel, User>
+  implements AbstractUserRepository
+{
   constructor(
     @InjectModel(UserModel.name) private userModel: Model<UserModel>,
-  ) {}
-
-  async save(user: User): Promise<void> {
-    const userModel = userToUserModel(user);
-
-    await this.userModel.create(userModel);
+  ) {
+    super(userModel, userModelToRaw, userToUserModel);
   }
 
   async existsByEmail(email: string): Promise<boolean> {
@@ -30,23 +30,11 @@ export default class UserRepository implements AbstractUserRepository {
     return !!userModel;
   }
 
-  async findById(id: string): Promise<User | null> {
-    const userModel = await this.userModel.findById(id);
-
-    if (!userModel) return null;
-
-    return userModelToUser(userModel);
-  }
-
   async findByEmail(email: string): Promise<User | null> {
     const userModel = await this.userModel.findOne({ email });
 
     if (!userModel) return null;
 
-    return userModelToUser(userModel);
-  }
-
-  async delete(id: string): Promise<void> {
-    await this.userModel.deleteOne({ id });
+    return userModelToRaw(userModel);
   }
 }

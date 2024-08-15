@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import PreUser from 'src/Client/application/entities/User/preUser';
 import AbstractPreUserRepository from 'src/Client/application/repositories/preUser/preUserRepository';
-import { preUserModelToPreUser } from '../mappers/preUser';
+import { preUserModelToRaw, preUserToModel } from '../mappers/preUser';
 import { PreUserModel } from '../mongodb/schemas/preUser';
 import BaseRepository from './baseRepository';
 
@@ -15,7 +15,7 @@ export default class PreUserRepository
   constructor(
     @InjectModel(PreUserModel.name) private preUserModel: Model<PreUserModel>,
   ) {
-    super(preUserModel, preUserModelToPreUser);
+    super(preUserModel, preUserModelToRaw, preUserToModel);
   }
 
   async existsByEmail(email: string): Promise<boolean> {
@@ -38,6 +38,6 @@ export default class PreUserRepository
 
     if (!userModel) return null;
 
-    return preUserModelToPreUser(userModel);
+    return preUserModelToRaw(userModel);
   }
 }
