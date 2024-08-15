@@ -1,27 +1,28 @@
-
-import { Password } from "src/Client/application/entities/User/Password";
-import ErrorUserNotFound from "src/Client/application/errors/userNotFound";
-import AbstractUserRepository from "src/Client/application/repositories/user/userRepository";
-
+import { Injectable } from '@nestjs/common';
+import { Password } from 'src/Client/application/entities/User/Password';
+import ErrorUserNotFound from 'src/Client/application/errors/userNotFound';
+import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 
 interface IUpdatePasswordParams {
-    userId: string;
-    newPassword: string;
+  userId: string;
+  newPassword: string;
 }
 
+@Injectable()
 export default class UpdatePasswordUseCase {
-    constructor(private readonly userRepository: AbstractUserRepository) {}
-    
-    async execute({ userId, newPassword }: IUpdatePasswordParams) {
-        const user = await this.userRepository.findById(userId);
+  constructor(private readonly userRepository: AbstractUserRepository) {}
 
-        if (!user) throw new ErrorUserNotFound();
+  async execute({ userId, newPassword }: IUpdatePasswordParams) {
+    const user = await this.userRepository.findById(userId);
 
-        if (user.password_hash.isTheSameValue(newPassword)) throw new Error("Cannot be the same password");
+    if (!user) throw new ErrorUserNotFound();
 
-        const newPasswordHash = new Password(newPassword)
-        user.password_hash = newPasswordHash;         
+    if (user.password_hash.isTheSameValue(newPassword))
+      throw new Error('Cannot be the same password');
 
-        await this.userRepository.save(user);
-    }
-} 
+    const newPasswordHash = new Password(newPassword);
+    user.password_hash = newPasswordHash;
+
+    await this.userRepository.save(user);
+  }
+}

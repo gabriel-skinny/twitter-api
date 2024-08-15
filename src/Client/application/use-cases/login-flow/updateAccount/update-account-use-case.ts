@@ -1,31 +1,30 @@
-import ErrorUserNotFound from "src/Client/application/errors/userNotFound";
-import AbstractUserRepository from "src/Client/application/repositories/user/userRepository";
+import { Injectable } from '@nestjs/common';
+import ErrorUserNotFound from 'src/Client/application/errors/userNotFound';
+import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 
 interface IParamsUpdateAccount {
-    id: string;
-    userData: {
-        bannerPictureS3Url?: string;
-        profilePictureS3Url?: string;
-        bio?: string;
-        location?: string;
-        website?: string,
-        profileName?: string;
-    }
+  id: string;
+  userData: {
+    bannerPictureS3Url?: string;
+    profilePictureS3Url?: string;
+    bio?: string;
+    location?: string;
+    website?: string;
+    profileName?: string;
+  };
 }
 
+@Injectable()
 export default class UpdateAccountUseCase {
-    
-    constructor(
-        private readonly userRepository: AbstractUserRepository,
-    ) {}
-    
-    async execute({ id, userData }: IParamsUpdateAccount) {
-        const user = await this.userRepository.findById(id);
+  constructor(private readonly userRepository: AbstractUserRepository) {}
 
-        if (!user) throw new ErrorUserNotFound();
+  async execute({ id, userData }: IParamsUpdateAccount) {
+    const user = await this.userRepository.findById(id);
 
-        user.updateFields(userData);
+    if (!user) throw new ErrorUserNotFound();
 
-        await this.userRepository.save(user);
-    }
+    user.updateFields(userData);
+
+    await this.userRepository.updateById({ id: user.id, data: user });
+  }
 }

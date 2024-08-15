@@ -5,6 +5,7 @@ import {
 } from '../../../entities/Validation/Validation';
 import { ValidationCode } from '../../../entities/Validation/ValidationCode';
 import AbstractValidationRepository from '../../../repositories/validation/validationRepository';
+import { Injectable } from '@nestjs/common';
 
 export interface ICreateValidationCodeParams {
   email: string;
@@ -15,18 +16,21 @@ export abstract class AbstractCreateValidationCodeUseCase {
   abstract execute(data: ICreateValidationCodeParams): Promise<Validation>;
 }
 
-export class CreateValidationCodeUseCase extends AbstractCreateValidationCodeUseCase {
+@Injectable()
+export class CreateValidationCodeUseCase
+  implements AbstractCreateValidationCodeUseCase
+{
   constructor(
     private readonly validationRepository: AbstractValidationRepository,
     private readonly emailService: AbstractEmailProvider,
-  ) {
-    super();
-  }
+  ) {}
 
   async execute({
     email,
     operationToValidateType,
   }: ICreateValidationCodeParams) {
+    console.log({ validationRepository: this.validationRepository });
+
     const emailValidationFounded =
       await this.validationRepository.findByEmailAndOperation({
         email,
