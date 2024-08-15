@@ -13,14 +13,13 @@ import { SessionDeviceTypesEnum } from 'src/Client/application/entities/User/Ses
 import { DeleteAccountUseCase } from 'src/Client/application/use-cases/login-flow/deleteAccount/delete-account-use-case';
 import { ForgotPasswordUseCase } from 'src/Client/application/use-cases/login-flow/forgotPassword/forgot-password-use-case';
 import LoginUseCase from 'src/Client/application/use-cases/login-flow/login/login-use-case';
-import LogoutUseCase, {
-  AbstractLogoutUseCase,
-} from 'src/Client/application/use-cases/login-flow/logout/logout-use-case';
+import { AbstractLogoutUseCase } from 'src/Client/application/use-cases/login-flow/logout/logout-use-case';
 import { LogoutAllOtherSessionsUseCase } from 'src/Client/application/use-cases/login-flow/logoutAllOtherSessions/logout-all-other-sessions-use-case';
 import UpdateAccountUseCase from 'src/Client/application/use-cases/login-flow/updateAccount/update-account-use-case';
 import UpdatePasswordUseCase from 'src/Client/application/use-cases/login-flow/updatePassword/update-password-use-case';
 import { UpdateUserDto } from '../dto/user';
 import { BaseControllerMethodInterface } from '../interface/baseController';
+import { ForgotPasswordDTO, LoginDTO, UpdatePasswordDTO } from '../dto/login';
 
 @Controller('login')
 export class LoginController {
@@ -48,7 +47,7 @@ export class LoginController {
 
   @Post('forgot-password')
   async forgotPassword(
-    @Body() email: string,
+    @Body() { email }: ForgotPasswordDTO,
   ): Promise<BaseControllerMethodInterface> {
     await this.forgotPasswordUseCase.execute(email);
 
@@ -60,19 +59,14 @@ export class LoginController {
 
   @Post()
   async login(
-    @Body() email: string,
-    password: string,
-    deviceType: 'desktop' | 'mobile',
+    @Body() { email, password, deviceType }: LoginDTO,
     @Ip() ip: string,
   ): Promise<BaseControllerMethodInterface<{ loginToken: string }>> {
     const { loginToken } = await this.loginUseCase.execute({
       email,
       password,
       ip,
-      deviceType:
-        deviceType == 'desktop'
-          ? SessionDeviceTypesEnum.DESKTOP
-          : SessionDeviceTypesEnum.MOBILE,
+      deviceType,
     });
 
     return {
@@ -82,7 +76,7 @@ export class LoginController {
     };
   }
 
-  @Post('logout')
+  @Post('logout/:id')
   async logout(
     @Param('id', ParseUUIDPipe) userId: string,
     @Ip() ip: string,
@@ -98,7 +92,7 @@ export class LoginController {
     };
   }
 
-  @Post('logout/all-other-sessions')
+  @Post('logout-all-other-sessions/:id')
   async logoutAllOtherSessions(
     @Param('id', ParseUUIDPipe) userId: string,
     @Ip() ip: string,
@@ -133,7 +127,7 @@ export class LoginController {
   @Patch('update-password')
   async updatePassword(
     @Param('id', ParseUUIDPipe) userId: string,
-    @Body() newPassword: string,
+    @Body() { newPassword }: UpdatePasswordDTO,
   ): Promise<BaseControllerMethodInterface> {
     await this.updatePasswordUseCase.execute({
       userId,
