@@ -1,53 +1,56 @@
-import { OperationToValidateTypeEnum } from "src/Client/application/entities/Validation/Validation";
-import InMemoryValidationRepository from "src/Client/application/repositories/validation/InMemoryValidationRepository";
-import EmailProviderStub from "src/Client/application/services/emailProviderStub";
-import { CreateValidationCodeUseCase } from "./create-validation-code";
-import { makeValidation } from "src/Client/application/tests/factories/makeValidation";
+import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
+import InMemoryValidationRepository from 'src/Client/application/repositories/validation/InMemoryValidationRepository';
+import EmailProviderStub from 'src/Client/application/services/emailServiceStub';
+import { CreateValidationCodeUseCase } from './create-validation-code';
+import { makeValidation } from 'src/Client/application/tests/factories/makeValidation';
 
 const makeUseCaseSut = () => {
-    const validationRepository = new InMemoryValidationRepository();
-    const emailService = new EmailProviderStub();
+  const validationRepository = new InMemoryValidationRepository();
+  const emailService = new EmailProviderStub();
 
-    const createValidationCodeUseCase = new CreateValidationCodeUseCase(
-        validationRepository,
-        emailService
-    );
+  const createValidationCodeUseCase = new CreateValidationCodeUseCase(
+    validationRepository,
+    emailService,
+  );
 
-    return { createValidationCodeUseCase, validationRepository, emailService }
-}
+  return { createValidationCodeUseCase, validationRepository, emailService };
+};
 
+describe('Create validation code use case', () => {
+  it('should Create a email Validation if email has none created', async () => {
+    const { createValidationCodeUseCase, validationRepository, emailService } =
+      makeUseCaseSut();
 
-describe("Create validation code use case", () => {
-    it ("should Create a email Validation if email has none created", async () => {
-        const { createValidationCodeUseCase, validationRepository, emailService } = makeUseCaseSut()
-        
-        emailService.sendEmail = jest.fn();
+    emailService.sendEmail = jest.fn();
 
-        const usedEmail = "testemail@gmail.com"
-        await createValidationCodeUseCase.execute({
-            email: usedEmail,
-            operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIRMATION
-        });
-
-        expect(validationRepository.validationDatabase).toHaveLength(1);
-        expect(emailService.sendEmail).toHaveBeenCalledWith({
-            destinyEmail: usedEmail,
-            emailType: "emailConfirmation",
-            content: `Send this validation code: ${validationRepository.validationDatabase[0].validationCode.value}`
-        });
+    const usedEmail = 'testemail@gmail.com';
+    await createValidationCodeUseCase.execute({
+      email: usedEmail,
+      operationToValidateType: OperationToValidateTypeEnum.EMAIL_CONFIRMATION,
     });
 
-    it ("Should throw an error with validation already exists", async () => {
-        const { createValidationCodeUseCase, validationRepository } = makeUseCaseSut()
-        
-        const validation = makeValidation();
-        await validationRepository.save(validation);
+    expect(validationRepository.validationDatabase).toHaveLength(1);
+    expect(emailService.sendEmail).toHaveBeenCalledWith({
+      destinyEmail: usedEmail,
+      emailType: 'emailConfirmation',
+      content: `Send this validation code: ${validationRepository.validationDatabase[0].validationCode.value}`,
+    });
+  });
 
-        const createValidationCodePromise = createValidationCodeUseCase.execute({
-            email: validation.email,
-            operationToValidateType: validation.operationToValidateType
-        });
+  it('Should throw an error with validation already exists', async () => {
+    const { createValidationCodeUseCase, validationRepository } =
+      makeUseCaseSut();
 
-        expect(createValidationCodePromise).rejects.toStrictEqual(new Error("Email validation type already exists for that user"));
-    })
-})
+    const validation = makeValidation();
+    await validationRepository.save(validation);
+
+    const createValidationCodePromise = createValidationCodeUseCase.execute({
+      email: validation.email,
+      operationToValidateType: validation.operationToValidateType,
+    });
+
+    expect(createValidationCodePromise).rejects.toStrictEqual(
+      new Error('Email validation type already exists for that user'),
+    );
+  });
+});
