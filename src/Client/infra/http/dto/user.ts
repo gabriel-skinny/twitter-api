@@ -46,3 +46,9 @@ export class UpdateUserDto {
   @IsString()
   bio?: string;
 }
+
+export class UpdateUserEmailDTO {
+  @IsNotEmpty()
+  @IsEmail()
+  newEmail: string;
+}

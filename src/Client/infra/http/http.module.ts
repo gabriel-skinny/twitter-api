@@ -3,7 +3,9 @@ import { Module } from '@nestjs/common';
 import { DeleteAccountUseCase } from 'src/Client/application/use-cases/login-flow/deleteAccount/delete-account-use-case';
 import { ForgotPasswordUseCase } from 'src/Client/application/use-cases/login-flow/forgotPassword/forgot-password-use-case';
 import LoginUseCase from 'src/Client/application/use-cases/login-flow/login/login-use-case';
-import LogoutUseCase from 'src/Client/application/use-cases/login-flow/logout/logout-use-case';
+import LogoutUseCase, {
+  AbstractLogoutUseCase,
+} from 'src/Client/application/use-cases/login-flow/logout/logout-use-case';
 import { LogoutAllOtherSessionsUseCase } from 'src/Client/application/use-cases/login-flow/logoutAllOtherSessions/logout-all-other-sessions-use-case';
 import UpdateAccountUseCase from 'src/Client/application/use-cases/login-flow/updateAccount/update-account-use-case';
 import UpdatePasswordUseCase from 'src/Client/application/use-cases/login-flow/updatePassword/update-password-use-case';
@@ -20,6 +22,7 @@ import {
   AbstractUpdateEmailCodeValidationUseCase,
   UpdateEmailCodeValidationUseCase,
 } from 'src/Client/application/use-cases/code-validation/update-email/update-email-use-case';
+import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/register-flow/updatePreUserEmail/update-preUser-email-use-case';
 
 @Module({
   imports: [DatabaseModule, ServiceModule],
@@ -30,10 +33,10 @@ import {
     DeleteAccountUseCase,
     ForgotPasswordUseCase,
     LoginUseCase,
-    LogoutUseCase,
     LogoutAllOtherSessionsUseCase,
     UpdateAccountUseCase,
     UpdatePasswordUseCase,
+    UpdatePreUserEmailUseCase,
     {
       provide: AbstractCreateValidationCodeUseCase,
       useClass: CreateValidationCodeUseCase,
@@ -41,6 +44,10 @@ import {
     {
       provide: AbstractUpdateEmailCodeValidationUseCase,
       useClass: UpdateEmailCodeValidationUseCase,
+    },
+    {
+      provide: AbstractLogoutUseCase,
+      useClass: LogoutUseCase,
     },
   ],
   controllers: [LoginController, RegisterController],
