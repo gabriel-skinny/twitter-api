@@ -1,9 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
 import User from 'src/Client/application/entities/User/User';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
-import { UserModel } from '../schemas/user';
+import { UserModel } from '../mongodb/schemas/user';
 import { Model } from 'mongoose';
-import { userToUserModel } from '../mappers/userToUserModel';
+import { userModelToUser, userToUserModel } from '../mappers/user';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -17,19 +17,36 @@ export default class UserRepository implements AbstractUserRepository {
 
     await this.userModel.create(userModel);
   }
-  existsByEmail(email: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+
+  async existsByEmail(email: string): Promise<boolean> {
+    const userModel = await this.userModel.exists({ email });
+
+    return !!userModel;
   }
-  existsByName(name: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+
+  async existsByName(name: string): Promise<boolean> {
+    const userModel = await this.userModel.exists({ name });
+
+    return !!userModel;
   }
-  findById(id: string): Promise<User | null> {
-    throw new Error('Method not implemented.');
+
+  async findById(id: string): Promise<User | null> {
+    const userModel = await this.userModel.findById(id);
+
+    if (!userModel) return null;
+
+    return userModelToUser(userModel);
   }
-  findByEmail(email: string): Promise<User | null> {
-    throw new Error('Method not implemented.');
+
+  async findByEmail(email: string): Promise<User | null> {
+    const userModel = await this.userModel.findOne({ email });
+
+    if (!userModel) return null;
+
+    return userModelToUser(userModel);
   }
-  delete(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async delete(id: string): Promise<void> {
+    await this.userModel.deleteOne({ id });
   }
 }

@@ -1,17 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import PreUser from 'src/Client/application/entities/User/preUser';
 import AbstractPreUserRepository from 'src/Client/application/repositories/preUser/preUserRepository';
+import { AbstractCacheService } from '../redis/cacheService';
 
 @Injectable()
 export default class PreUserRepository implements AbstractPreUserRepository {
-  save(user: PreUser): Promise<void> {
-    throw new Error('Method not implemented.');
+  constructor(private CacheService: AbstractCacheService) {}
+
+  async save(preUser: PreUser): Promise<void> {
+    await this.CacheService.set({
+      key: 'preUser',
+      value: preUser,
+      expiresIn: preUser.expiresIn,
+    });
   }
-  existsByEmail(email: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  async existsByEmail(email: string): Promise<boolean> {
+    return false;
   }
-  existsByName(name: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  async existsByName(name: string): Promise<boolean> {
+    return false;
   }
   findById(id: string): Promise<PreUser | null> {
     throw new Error('Method not implemented.');
