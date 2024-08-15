@@ -7,13 +7,18 @@ import {
 
 @Injectable()
 export default class AuthService implements AbstractAuthService {
-  makeLoginTokenToUser(user: User): Promise<string> {
-    throw new Error('Method not implemented.');
+  async makeLoginTokenToUser(user: User): Promise<string> {
+    console.log('Auth Method not implemented.');
+
+    return 'tokenToString';
   }
-  makeToken(data: {
+
+  async makeToken(data: {
     userEmail: string;
     tokenType: TokenTypeEnum;
   }): Promise<string> {
-    throw new Error('Method not implemented.');
+    console.log('Auth Method not implemented.');
+
+    return 'token';
   }
 }
