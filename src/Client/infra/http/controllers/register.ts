@@ -3,6 +3,7 @@ import UpdateAccountUseCase from "src/Client/application/use-cases/login-flow/up
 import CreateAccountUseCase from "src/Client/application/use-cases/register-flow/createAccount/create-account-use-case";
 import { StartAccountUseCase } from "src/Client/application/use-cases/register-flow/startAccount/start-account-use-case";
 import { BaseControllerMethodInterface } from "../interface/baseController";
+import { CreateUserDto } from "../dto/user";
 
 @Controller("register")
 export class RegisterController {
@@ -25,7 +26,7 @@ export class RegisterController {
     }
 
     @Post("start-account")
-    async startAccount(@Body() email: string, name: string, password: string): Promise<BaseControllerMethodInterface<{ preUserId: string }>> {
+    async startAccount(@Body() { email, name, password }: CreateUserDto): Promise<BaseControllerMethodInterface<{ preUserId: string }>> {
         const { preUserId } = await this.startAccountUseCase.execute({
             email,
             name,
