@@ -3,13 +3,18 @@ import { HydratedDocument } from 'mongoose';
 
 export type PreUserDocument = HydratedDocument<PreUserModel>;
 
-@Schema()
+@Schema({ collection: 'preusers' })
 export class PreUserModel {
   constructor(preUserModel: PreUserModel) {
-    Object.keys(this).map((key) => (this[key] = preUserModel[key]));
+    Object.keys(preUserModel).map((key) => (this[key] = preUserModel[key]));
+
+    this._id = preUserModel.id;
   }
 
-  @Prop({ _id: true })
+  @Prop()
+  _id?: string;
+
+  @Prop()
   id: string;
 
   @Prop()
@@ -22,7 +27,7 @@ export class PreUserModel {
   password_hash: string;
 
   @Prop()
-  expiresIn?: number;
+  expiresIn: number;
 
   @Prop()
   createdAt: Date;

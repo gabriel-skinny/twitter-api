@@ -3,11 +3,16 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<UserModel>;
 
-@Schema()
+@Schema({ collection: 'users' })
 export class UserModel {
   constructor(userModel: UserModel) {
-    Object.keys(this).map((key) => (this[key] = userModel[key]));
+    Object.keys(userModel).map((key) => (this[key] = userModel[key]));
+
+    this._id = userModel.id;
   }
+
+  @Prop()
+  _id?: string;
 
   @Prop({ _id: true })
   id: string;

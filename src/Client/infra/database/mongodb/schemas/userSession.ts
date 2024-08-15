@@ -4,11 +4,18 @@ import { SessionDeviceTypesEnum } from 'src/Client/application/entities/User/Ses
 
 export type UserSessionDocument = HydratedDocument<UserSessionModel>;
 
-@Schema()
+@Schema({ collection: 'usersessions' })
 export class UserSessionModel {
   constructor(userSessionModel: UserSessionModel) {
-    Object.keys(this).map((key) => (this[key] = userSessionModel[key]));
+    Object.keys(userSessionModel).map(
+      (key) => (this[key] = userSessionModel[key]),
+    );
+
+    this._id = userSessionModel.id;
   }
+
+  @Prop()
+  _id?: string;
 
   @Prop({ _id: true })
   id: string;
