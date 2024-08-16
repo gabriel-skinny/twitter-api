@@ -7,12 +7,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import UpdateAccountUseCase from 'src/Client/application/use-cases/login-flow/updateAccount/update-account-use-case';
 import CreateAccountUseCase from 'src/Client/application/use-cases/register-flow/createAccount/create-account-use-case';
 import { StartAccountUseCase } from 'src/Client/application/use-cases/register-flow/startAccount/start-account-use-case';
-import { BaseControllerMethodInterface } from '../interface/baseController';
-import { CreateUserDto, UpdateUserEmailDTO } from '../dto/user';
 import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/register-flow/updatePreUserEmail/update-preUser-email-use-case';
+import { CreateUserDto, UpdateUserEmailDTO } from '../dto/user';
+import { BaseControllerMethodInterface } from '../interface/baseController';
 
 @Controller('register')
 export class RegisterController {
