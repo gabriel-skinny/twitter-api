@@ -1,6 +1,7 @@
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
 import AbstractValidationRepository from '../../../repositories/validation/validationRepository';
 import { Injectable } from '@nestjs/common';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
 
 export interface IUpdateEmailCodeValidationUseCaseParams {
   newEmail: string;
@@ -32,8 +33,7 @@ export class UpdateEmailCodeValidationUseCase extends AbstractUpdateEmailCodeVal
       operationToValidateType,
     });
 
-    if (!validation)
-      throw new Error('That validation does not exists for that email');
+    if (!validation) throw new NotFoundCustomError('Validation');
 
     validation.email = newEmail;
     await this.validationRepository.updateById({

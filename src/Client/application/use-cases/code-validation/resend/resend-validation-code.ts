@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
 import AbstractValidationRepository from 'src/Client/application/repositories/validation/validationRepository';
 import AbstractEmailProvider from 'src/Client/application/services/emailService';
 
@@ -30,8 +31,7 @@ export class ResendValidationUseCase extends AbstractResendValidationUseCase {
       operationToValidateType,
     });
 
-    if (!validation)
-      throw new Error('Validation does not exists for that user');
+    if (!validation) throw new NotFoundCustomError('Validation');
 
     await this.emailService.sendEmail({
       destinyEmail: email,

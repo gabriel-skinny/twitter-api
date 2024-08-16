@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import ErrorUserNotFound from 'src/Client/application/errors/userNotFound';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 
 interface IParamsUpdateAccount {
@@ -21,7 +21,7 @@ export default class UpdateAccountUseCase {
   async execute({ id, userData }: IParamsUpdateAccount) {
     const user = await this.userRepository.findById(id);
 
-    if (!user) throw new ErrorUserNotFound();
+    if (!user) throw new NotFoundCustomError('user');
 
     user.updateFields(userData);
 

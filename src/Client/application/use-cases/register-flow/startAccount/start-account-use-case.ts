@@ -1,14 +1,11 @@
-import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
-import AbstractPreUserRepository from 'src/Client/application/repositories/preUser/preUserRepository';
 import { Injectable } from '@nestjs/common';
-import ErrorUserAlreadyCreated from '../../../errors/userAlreadyCreated';
-import AbstractUserRepository from '../../../repositories/user/userRepository';
-import {
-  AbstractCreateValidationCodeUseCase,
-  CreateValidationCodeUseCase,
-} from '../../code-validation/create/create-validation-code';
-import PreUser from 'src/Client/application/entities/User/preUser';
 import { Password } from 'src/Client/application/entities/User/Password';
+import PreUser from 'src/Client/application/entities/User/preUser';
+import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
+import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import AbstractPreUserRepository from 'src/Client/application/repositories/preUser/preUserRepository';
+import AbstractUserRepository from '../../../repositories/user/userRepository';
+import { AbstractCreateValidationCodeUseCase } from '../../code-validation/create/create-validation-code';
 
 interface IDataProps {
   name: string;
@@ -26,11 +23,11 @@ export class StartAccountUseCase {
 
   async execute(data: IDataProps): Promise<{ preUserId: string }> {
     if (await this.userRepository.existsByEmail(data.email))
-      throw new ErrorUserAlreadyCreated('email');
+      throw new AlreadyCreatedError('user');
     if (await this.userRepository.existsByName(data.name))
-      throw new ErrorUserAlreadyCreated('name');
+      throw new AlreadyCreatedError('user');
     if (await this.preUserRepository.existsByName(data.name))
-      throw new ErrorUserAlreadyCreated('name');
+      throw new AlreadyCreatedError('preUser');
 
     if (await this.preUserRepository.existsByEmail(data.email)) {
       await this.preUserRepository.deleteByEmail(data.email);

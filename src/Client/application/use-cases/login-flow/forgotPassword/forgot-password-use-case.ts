@@ -1,8 +1,8 @@
-import ErrorUserNotFound from 'src/Client/application/errors/userNotFound';
+import { Injectable } from '@nestjs/common';
+import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 import { AbstractCreateValidationCodeUseCase } from '../../code-validation/create/create-validation-code';
-import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
-import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ForgotPasswordUseCase {
@@ -13,7 +13,7 @@ export class ForgotPasswordUseCase {
 
   async execute(userEmail: string) {
     if (!(await this.userRepository.existsByEmail(userEmail)))
-      throw new ErrorUserNotFound();
+      throw new NotFoundCustomError('user');
 
     await this.createValidationUseCase.execute({
       email: userEmail,

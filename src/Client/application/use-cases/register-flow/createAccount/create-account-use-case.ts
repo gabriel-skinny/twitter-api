@@ -1,34 +1,41 @@
-import AbstractPreUserRepository from "src/Client/application/repositories/preUser/preUserRepository";
-import { Injectable } from "@nestjs/common";
-import User from "../../../entities/User/User";
-import ErrorUserNotFound from "../../../errors/userNotFound";
-import AbstractUserRepository from "../../../repositories/user/userRepository";
-import { AbstractAuthService } from "../../../services/AuthService";
+import { Injectable } from '@nestjs/common';
 
+import AbstractPreUserRepository from 'src/Client/application/repositories/preUser/preUserRepository';
+import User from '../../../entities/User/User';
+import AbstractUserRepository from '../../../repositories/user/userRepository';
+import { AbstractAuthService } from '../../../services/AuthService';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
 
 @Injectable()
 export default class CreateAccountUseCase {
-    constructor(
-        private readonly preUserRepository: AbstractPreUserRepository,
-        private readonly userRepository: AbstractUserRepository,
-        private readonly authService: AbstractAuthService
-    ) {}
-    
-    async execute(preUserId: string): Promise<{ loginToken: string }> {
-        const preUser = await this.preUserRepository.findById(preUserId);
-        
-        if (!preUser) throw new ErrorUserNotFound();
+  constructor(
+    private readonly preUserRepository: AbstractPreUserRepository,
+    private readonly userRepository: AbstractUserRepository,
+    private readonly authService: AbstractAuthService,
+  ) {}
 
-        const user = new User({
-            name: preUser.name,
-            email: preUser.email,
-            password_hash: preUser.password_hash
-        });
+  async execute(preUserId: string): Promise<{ loginToken: string }> {
+    const preUser = await this.preUserRepository.findById(preUserId);
 
-        await this.userRepository.save(user);
+    if (!preUser) throw new NotFoundCustomError('preUser');
 
-        const loginToken = await this.authService.makeLoginTokenToUser(user);
+    if (
+      (await this.userRepository.existsByEmail(preUser.email)) ||
+      (await this.userRepository.existsByName(preUser.name))
+    )
+      throw new AlreadyCreatedError('user');
 
-        return { loginToken };
-    }
+    const user = new User({
+      name: preUser.name,
+      email: preUser.email,
+      password_hash: preUser.password_hash,
+    });
+
+    await this.userRepository.save(user);
+
+    const loginToken = await this.authService.makeLoginTokenToUser(user);
+
+    return { loginToken };
+  }
 }

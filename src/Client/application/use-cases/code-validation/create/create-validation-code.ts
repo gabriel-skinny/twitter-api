@@ -6,6 +6,7 @@ import {
 import { ValidationCode } from '../../../entities/Validation/ValidationCode';
 import AbstractValidationRepository from '../../../repositories/validation/validationRepository';
 import { Injectable } from '@nestjs/common';
+import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
 
 export interface ICreateValidationCodeParams {
   email: string;
@@ -29,16 +30,12 @@ export class CreateValidationCodeUseCase
     email,
     operationToValidateType,
   }: ICreateValidationCodeParams) {
-    console.log({ validationRepository: this.validationRepository });
-
-    const emailValidationFounded =
+    const validationFounded =
       await this.validationRepository.findByEmailAndOperation({
         email,
         operationToValidateType,
       });
-
-    if (emailValidationFounded)
-      throw new Error('Email validation type already exists for that user');
+    if (validationFounded) throw new AlreadyCreatedError('Validation');
 
     const validation = new Validation({
       email,

@@ -5,6 +5,8 @@ import {
   AbstractAuthService,
   TokenTypeEnum,
 } from '../../../services/AuthService';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import WrongValueError from 'src/Client/application/errors/wrongValue';
 
 interface IValidateCodeUseCaseParams {
   email: string;
@@ -33,11 +35,10 @@ export default class ValidateCodeUseCase {
       operationToValidateType,
     });
 
-    if (!validation)
-      throw new Error('Validation does not exists for that email');
+    if (!validation) throw new NotFoundCustomError('Validation');
 
     if (validation.validationCode.value != validationCode)
-      throw new Error('Wrong validation code');
+      throw new WrongValueError('ValidationCode');
 
     let jwtToken: string;
     switch (operationToValidateType) {

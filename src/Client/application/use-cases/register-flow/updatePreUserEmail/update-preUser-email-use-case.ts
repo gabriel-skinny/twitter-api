@@ -1,10 +1,10 @@
 import AbstractPreUserRepository from 'src/Client/application/repositories/preUser/preUserRepository';
 import { Injectable } from '@nestjs/common';
-import ErrorUserAlreadyCreated from '../../../errors/userAlreadyCreated';
-import ErrorUserNotFound from '../../../errors/userNotFound';
 import AbstractUserRepository from '../../../repositories/user/userRepository';
 import { AbstractUpdateEmailCodeValidationUseCase } from '../../code-validation/update-email/update-email-use-case';
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
+import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
 
 interface IDataProps {
   preUserId: string;
@@ -21,13 +21,13 @@ export class UpdatePreUserEmailUseCase {
 
   async execute(data: IDataProps): Promise<void> {
     if (await this.userRepository.existsByEmail(data.newEmail))
-      throw new ErrorUserAlreadyCreated('email');
+      throw new AlreadyCreatedError('user');
     if (await this.preUserRepository.existsByEmail(data.newEmail))
-      throw new ErrorUserAlreadyCreated('email');
+      throw new AlreadyCreatedError('user');
 
     const preUser = await this.preUserRepository.findById(data.preUserId);
 
-    if (!preUser) throw new ErrorUserNotFound();
+    if (!preUser) throw new NotFoundCustomError('preUser');
 
     await this.updateEmailCodeValidationUseCase.execute({
       newEmail: data.newEmail,

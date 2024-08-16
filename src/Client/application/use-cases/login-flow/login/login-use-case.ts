@@ -1,12 +1,11 @@
 import UserSession, {
   SessionDeviceTypesEnum,
 } from 'src/Client/application/entities/User/Session';
-import ErrorUserNotFound from 'src/Client/application/errors/userNotFound';
-
 import AbstractSessionRepository from 'src/Client/application/repositories/session/sessionRepository';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 import { AbstractAuthService } from 'src/Client/application/services/AuthService';
 import { Injectable } from '@nestjs/common';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
 
 interface ILoginUseCaseParams {
   email: string;
@@ -31,7 +30,7 @@ export default class LoginUseCase {
   }: ILoginUseCaseParams): Promise<{ loginToken: string }> {
     const user = await this.userRepository.findByEmail(email);
 
-    if (!user) throw new ErrorUserNotFound();
+    if (!user) throw new NotFoundCustomError('user');
 
     if (!user.password_hash.isTheSameValue(password))
       throw new Error('Wrong password');
