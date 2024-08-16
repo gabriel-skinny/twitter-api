@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import 'dotenv/config';
 import { AbstractAuthService } from 'src/Client/application/services/AuthService';
 import AbstractEmailService from 'src/Client/application/services/emailService';
 import AbstractFileStorageService from 'src/Client/application/services/FileStorageService';
-import AuthService, { AbstractGenericAuthProvider } from './authService';
+import AuthService from './authService';
 import EmailService from './emailService';
 import FileStorageService from './fileStorageService';
-import { JwtModule, JwtService } from '@nestjs/jwt';
-import 'dotenv/config';
+import S3StorageProvider from './s3Provider';
 
 @Module({
   imports: [
@@ -28,7 +29,10 @@ import 'dotenv/config';
     },
     {
       provide: AbstractFileStorageService,
-      useClass: FileStorageService,
+      useFactory: () =>
+        new FileStorageService(
+          new S3StorageProvider(process.env.AWS_S3_BUCKET_NAME),
+        ),
     },
   ],
   exports: [
