@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   IsStrongPassword,
+  IsUrl,
 } from 'class-validator';
 
 export class CreateUserDto {
@@ -28,10 +29,12 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsString()
+  @IsUrl()
   profilePictureS3Url?: string;
 
   @IsOptional()
   @IsString()
+  @IsUrl()
   bannerS3Url?: string;
 
   @IsOptional()

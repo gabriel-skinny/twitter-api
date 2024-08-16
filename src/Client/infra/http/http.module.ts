@@ -23,6 +23,11 @@ import {
   UpdateEmailCodeValidationUseCase,
 } from 'src/Client/application/use-cases/code-validation/update-email/update-email-use-case';
 import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/register-flow/updatePreUserEmail/update-preUser-email-use-case';
+import { CodeValidationController } from './controllers/codeValidation';
+import { ResendValidationUseCase } from 'src/Client/application/use-cases/code-validation/resend/resend-validation-code';
+import ValidateCodeUseCase from 'src/Client/application/use-cases/code-validation/validate/validate-code-use-case';
+import { UploadController } from './controllers/upload';
+import UploadMediaUseCase from 'src/Client/application/use-cases/upload-media/upload-media-use-case';
 
 @Module({
   imports: [DatabaseModule, ServiceModule],
@@ -37,6 +42,8 @@ import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/regi
     UpdateAccountUseCase,
     UpdatePasswordUseCase,
     UpdatePreUserEmailUseCase,
+    ResendValidationUseCase,
+    ValidateCodeUseCase,
     {
       provide: AbstractCreateValidationCodeUseCase,
       useClass: CreateValidationCodeUseCase,
@@ -49,7 +56,13 @@ import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/regi
       provide: AbstractLogoutUseCase,
       useClass: LogoutUseCase,
     },
+    UploadMediaUseCase,
   ],
-  controllers: [LoginController, RegisterController],
+  controllers: [
+    LoginController,
+    RegisterController,
+    CodeValidationController,
+    UploadController,
+  ],
 })
 export default class HttpModule {}

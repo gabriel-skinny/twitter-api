@@ -22,7 +22,11 @@ import { UpdateUserDto } from '../dto/user';
 import { BaseControllerMethodInterface } from '../interface/baseController';
 import { ForgotPasswordDTO, LoginDTO, UpdatePasswordDTO } from '../dto/login';
 import { AuthenticationGuard } from '../guards/authenticationGuard';
-import { IsPublicDecoretor } from '../decoretors/authenticationType';
+import {
+  AuthenticationTypeDecoretor,
+  IsPublicDecoretor,
+} from '../decoretors/authenticationType';
+import { TokenTypeEnum } from 'src/Client/application/services/AuthService';
 
 @UseGuards(AuthenticationGuard)
 @Controller('login')
@@ -37,7 +41,8 @@ export class LoginController {
     private readonly updatePasswordUseCase: UpdatePasswordUseCase,
   ) {}
 
-  @Delete('user')
+  @Delete('user/:id')
+  @AuthenticationTypeDecoretor(TokenTypeEnum.LOGIN)
   async deleteUser(
     @Param('id', ParseUUIDPipe) userId: string,
   ): Promise<BaseControllerMethodInterface> {
@@ -50,6 +55,7 @@ export class LoginController {
   }
 
   @Post('forgot-password')
+  @IsPublicDecoretor()
   async forgotPassword(
     @Body() { email }: ForgotPasswordDTO,
   ): Promise<BaseControllerMethodInterface> {
@@ -82,6 +88,7 @@ export class LoginController {
   }
 
   @Post('logout/:id')
+  @AuthenticationTypeDecoretor(TokenTypeEnum.LOGIN)
   async logout(
     @Param('id', ParseUUIDPipe) userId: string,
     @Ip() ip: string,
@@ -98,6 +105,7 @@ export class LoginController {
   }
 
   @Post('logout-all-other-sessions/:id')
+  @AuthenticationTypeDecoretor(TokenTypeEnum.LOGIN)
   async logoutAllOtherSessions(
     @Param('id', ParseUUIDPipe) userId: string,
     @Ip() ip: string,
@@ -113,7 +121,8 @@ export class LoginController {
     };
   }
 
-  @Patch('update-user')
+  @Patch('update-user/:id')
+  @AuthenticationTypeDecoretor(TokenTypeEnum.LOGIN)
   async updateUser(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() user: UpdateUserDto,
@@ -129,7 +138,8 @@ export class LoginController {
     };
   }
 
-  @Patch('update-password')
+  @Patch('update-password/:id')
+  @AuthenticationTypeDecoretor(TokenTypeEnum.PASSWORD_CHANGE)
   async updatePassword(
     @Param('id', ParseUUIDPipe) userId: string,
     @Body() { newPassword }: UpdatePasswordDTO,
