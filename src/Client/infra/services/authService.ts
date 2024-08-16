@@ -1,24 +1,51 @@
 import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import User from 'src/Client/application/entities/User/User';
 import {
   AbstractAuthService,
   TokenTypeEnum,
 } from 'src/Client/application/services/AuthService';
 
+export abstract class AbstractGenericAuthProvider {
+  abstract signAsync(payload: object): Promise<string>;
+  abstract verifyAsync(token: string): Promise<object>;
+}
+
 @Injectable()
 export default class AuthService implements AbstractAuthService {
-  async makeLoginTokenToUser(user: User): Promise<string> {
-    console.log('Auth Method not implemented.');
+  constructor(private authProvider: JwtService) {}
 
-    return 'tokenToString';
+  async makeLoginTokenToUser(user: User): Promise<string> {
+    return this.authProvider.signAsync({
+      sub: user.id,
+      username: user.name,
+      tokentype: 'login',
+    });
   }
 
-  async makeToken(data: {
+  async makeToken({
+    userEmail,
+    tokenType,
+  }: {
     userEmail: string;
     tokenType: TokenTypeEnum;
   }): Promise<string> {
-    console.log('Auth Method not implemented.');
+    return this.authProvider.signAsync({ userEmail, tokentype: tokenType });
+  }
 
-    return 'token';
+  private async verify(token: string): Promise<Record<any, any>> {
+    return this.authProvider.verifyAsync(token);
+  }
+
+  async validate(token: string, tokenType: TokenTypeEnum): Promise<boolean> {
+    try {
+      const payload = await this.verify(token);
+
+      if (payload.tokentype !== tokenType) return false;
+
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }
