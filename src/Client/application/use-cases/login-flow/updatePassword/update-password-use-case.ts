@@ -23,6 +23,6 @@ export default class UpdatePasswordUseCase {
     const newPasswordHash = new Password(newPassword);
     user.password_hash = newPasswordHash;
 
-    await this.userRepository.save(user);
+    await this.userRepository.updateById({ id: user.id, data: user });
   }
 }
