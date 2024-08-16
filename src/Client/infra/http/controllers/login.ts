@@ -8,6 +8,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { SessionDeviceTypesEnum } from 'src/Client/application/entities/User/Session';
 import { DeleteAccountUseCase } from 'src/Client/application/use-cases/login-flow/deleteAccount/delete-account-use-case';
@@ -20,7 +21,10 @@ import UpdatePasswordUseCase from 'src/Client/application/use-cases/login-flow/u
 import { UpdateUserDto } from '../dto/user';
 import { BaseControllerMethodInterface } from '../interface/baseController';
 import { ForgotPasswordDTO, LoginDTO, UpdatePasswordDTO } from '../dto/login';
+import { AuthenticationGuard } from '../guards/authenticationGuard';
+import { IsPublicDecoretor } from '../decoretors/authenticationType';
 
+@UseGuards(AuthenticationGuard)
 @Controller('login')
 export class LoginController {
   constructor(
@@ -58,6 +62,7 @@ export class LoginController {
   }
 
   @Post()
+  @IsPublicDecoretor()
   async login(
     @Body() { email, password, deviceType }: LoginDTO,
     @Ip() ip: string,
