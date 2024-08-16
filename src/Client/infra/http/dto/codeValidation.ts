@@ -1,4 +1,11 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, Length } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  Length,
+} from 'class-validator';
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
 
 export class ValidateDTO {
@@ -11,8 +18,7 @@ export class ValidateDTO {
   operationToValidateType: OperationToValidateTypeEnum;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Length(6)
+  @IsInt()
   validationCode: number;
 }
 
