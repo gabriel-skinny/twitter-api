@@ -71,6 +71,7 @@ import ValidationRepository from './repositories/validationRepository';
     AbstractPreUserRepository,
     AbstractUserSessionRepository,
     AbstractValidationRepository,
+    AbstractCacheService,
   ],
 })
 export class DatabaseModule {}
