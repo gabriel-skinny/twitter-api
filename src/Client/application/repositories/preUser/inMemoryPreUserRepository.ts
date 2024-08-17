@@ -31,11 +31,24 @@ export default class InMemoryPreUserRepositroy
     );
   }
 
-  findByEmail(email: string): Promise<PreUser | null> {
-    throw new Error('Method not implemented.');
+  async findByEmail(email: string): Promise<PreUser | null> {
+    const preUser = this.preUserDatabase.find(
+      (preUser) => preUser.email == email,
+    );
+
+    if (!preUser) return null;
+
+    return preUser;
   }
 
-  updateById(data: { id: string; data: Partial<PreUser> }): Promise<void> {
-    throw new Error('Method not implemented.');
+  async updateById(data: {
+    id: string;
+    data: Partial<PreUser>;
+  }): Promise<void> {
+    const findIndex = this.preUserDatabase.findIndex((u) => u.id == data.id);
+
+    Object.keys(data.data).map(
+      (key) => this.preUserDatabase[findIndex][key] == data.data[key],
+    );
   }
 }

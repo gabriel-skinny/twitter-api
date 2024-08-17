@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import NotFoundCustomError from 'src/Client/application/errors/notFound';
 import AbstractUserSessionRepository from 'src/Client/application/repositories/session/sessionRepository';
 
 export interface ILogoutUseCaseParams {
@@ -24,7 +25,7 @@ export default class LogoutUseCase extends AbstractLogoutUseCase {
       ip,
     });
 
-    if (!userSession) throw new Error('User session not found');
+    if (!userSession) throw new NotFoundCustomError('User session');
 
     await this.userSessionRepository.delete(userSession.id);
   }

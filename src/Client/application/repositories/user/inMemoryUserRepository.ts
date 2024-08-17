@@ -35,7 +35,9 @@ export default class InMemoryUserRepositroy implements AbstractUserRepository {
     this.userDatabase = this.userDatabase.filter((u) => u.id !== id);
   }
 
-  updateById(data: { id: string; data: User }): Promise<void> {
-    throw new Error('Method not implemented.');
+  async updateById(data: { id: string; data: User }): Promise<void> {
+    const findIndex = this.userDatabase.findIndex((u) => u.id == data.id);
+
+    this.userDatabase[findIndex] = data.data;
   }
 }

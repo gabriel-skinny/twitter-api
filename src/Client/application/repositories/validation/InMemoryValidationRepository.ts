@@ -44,7 +44,9 @@ export default class InMemoryValidationRepository
     );
   }
 
-  updateById(data: { id: string; data: Validation }): Promise<void> {
-    throw new Error('Method not implemented.');
+  async updateById(data: { id: string; data: Validation }): Promise<void> {
+    const findIndex = this.validationDatabase.findIndex((u) => u.id == data.id);
+
+    this.validationDatabase[findIndex] = data.data;
   }
 }

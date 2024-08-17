@@ -6,6 +6,8 @@ import AbstractUserRepository from 'src/Client/application/repositories/user/use
 import { AbstractAuthService } from 'src/Client/application/services/AuthService';
 import { Injectable } from '@nestjs/common';
 import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import WrongValueError from 'src/Client/application/errors/wrongValue';
+import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
 
 interface ILoginUseCaseParams {
   email: string;
@@ -33,7 +35,7 @@ export default class LoginUseCase {
     if (!user) throw new NotFoundCustomError('user');
 
     if (!user.password_hash.isTheSameValue(password))
-      throw new Error('Wrong password');
+      throw new WrongValueError('password');
 
     if (
       await this.userSessionRepository.findByUserIdAndIp({
@@ -41,7 +43,7 @@ export default class LoginUseCase {
         ip,
       })
     )
-      throw new Error('User session already created');
+      throw new AlreadyCreatedError('User session');
 
     const userSession = new UserSession({
       userId: user.id,

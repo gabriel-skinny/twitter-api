@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
 import NotFoundCustomError from 'src/Client/application/errors/notFound';
 import AbstractValidationRepository from 'src/Client/application/repositories/validation/validationRepository';
-import AbstractEmailProvider from 'src/Client/application/services/emailService';
+import AbstractEmailService from 'src/Client/application/services/emailService';
 
 export interface IResendValidationCodeParams {
   email: string;
@@ -17,7 +17,7 @@ export abstract class AbstractResendValidationUseCase {
 export class ResendValidationUseCase extends AbstractResendValidationUseCase {
   constructor(
     private readonly validationRepository: AbstractValidationRepository,
-    private readonly emailService: AbstractEmailProvider,
+    private readonly emailService: AbstractEmailService,
   ) {
     super();
   }
