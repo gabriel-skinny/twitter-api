@@ -6,12 +6,16 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import CreateAccountUseCase from 'src/Client/application/use-cases/register-flow/createAccount/create-account-use-case';
-import { StartAccountUseCase } from 'src/Client/application/use-cases/register-flow/startAccount/start-account-use-case';
-import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/register-flow/updatePreUserEmail/update-preUser-email-use-case';
+import CreateAccountUseCase from 'src/Client/application/use-cases/register/createAccount/create-account-use-case';
+import { StartAccountUseCase } from 'src/Client/application/use-cases/register/startAccount/start-account-use-case';
+import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/register/updatePreUserEmail/update-preUser-email-use-case';
 import { CreateUserDto, UpdateUserEmailDTO } from '../dto/user';
 import { BaseControllerMethodInterface } from '../interface/baseController';
+import { AuthenticationGuard } from '../guards/authenticationGuard';
+import { AuthenticationTypeDecoretor } from '../decoretors/authenticationType';
+import { TokenTypeEnum } from 'src/Client/application/services/AuthService';
 
 @Controller('register')
 export class RegisterController {
@@ -22,6 +26,8 @@ export class RegisterController {
   ) {}
 
   @Post('create-account/:id')
+  @UseGuards(AuthenticationGuard)
+  @AuthenticationTypeDecoretor(TokenTypeEnum.EMAIL_CONFIRMATION)
   async createAccount(
     @Param('id', ParseUUIDPipe) preUserId: string,
   ): Promise<BaseControllerMethodInterface<{ loginToken: string }>> {

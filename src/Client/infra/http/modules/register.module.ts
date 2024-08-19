@@ -11,10 +11,10 @@ import {
   AbstractUpdateEmailCodeValidationUseCase,
   UpdateEmailCodeValidationUseCase,
 } from 'src/Client/application/use-cases/code-validation/update-email/update-email-use-case';
-import CreateAccountUseCase from 'src/Client/application/use-cases/register-flow/createAccount/create-account-use-case';
-import { StartAccountUseCase } from 'src/Client/application/use-cases/register-flow/startAccount/start-account-use-case';
-import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/register-flow/updatePreUserEmail/update-preUser-email-use-case';
-import { RegisterController } from './register';
+import CreateAccountUseCase from 'src/Client/application/use-cases/register/createAccount/create-account-use-case';
+import { StartAccountUseCase } from 'src/Client/application/use-cases/register/startAccount/start-account-use-case';
+import { UpdatePreUserEmailUseCase } from 'src/Client/application/use-cases/register/updatePreUserEmail/update-preUser-email-use-case';
+import { RegisterController } from '../controllers/register';
 
 @Module({
   imports: [DatabaseModule, ServiceModule],
