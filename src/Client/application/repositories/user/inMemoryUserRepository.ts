@@ -40,4 +40,19 @@ export default class InMemoryUserRepositroy implements AbstractUserRepository {
 
     this.userDatabase[findIndex] = data.data;
   }
+
+  async findMany(data: {
+    limit?: number;
+    skip?: number;
+    filter?: Omit<Partial<User>, 'name'> & { name?: string | RegExp };
+    select?: { [K in keyof User]?: boolean };
+  }): Promise<User[] | null> {
+    return this.userDatabase.slice(data.skip, data.skip + data.limit);
+  }
+
+  async count(
+    data: Omit<Partial<User>, 'name'> & { name?: string | RegExp },
+  ): Promise<number> {
+    return this.userDatabase.length;
+  }
 }
