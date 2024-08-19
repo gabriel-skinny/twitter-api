@@ -37,4 +37,28 @@ export default class UserRepository
 
     return userModelToRaw(userModel);
   }
+
+  async findMany({
+    limit,
+    skip,
+    filter,
+    select,
+  }: {
+    limit?: number;
+    skip?: number;
+    filter?: Omit<Partial<User>, 'name'> & { name?: string | RegExp };
+    select?: { [K in keyof User]?: boolean };
+  }): Promise<User[] | null> {
+    return this.userModel.find(
+      filter,
+      {},
+      { fields: select, limit, skip: skip },
+    );
+  }
+
+  async count(
+    query: Omit<Partial<User>, 'name'> & { name?: string | RegExp },
+  ): Promise<number> {
+    return this.userModel.countDocuments(query);
+  }
 }

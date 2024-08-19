@@ -30,18 +30,27 @@ export default class AuthService implements AbstractAuthService {
     userEmail: string;
     tokenType: TokenTypeEnum;
   }): Promise<string> {
-    return this.authProvider.signAsync({ userEmail, tokentype: tokenType });
+    return this.authProvider.signAsync({
+      sub: userEmail,
+      tokentype: tokenType,
+    });
   }
 
   private async verify(token: string): Promise<Record<any, any>> {
     return this.authProvider.verifyAsync(token);
   }
 
-  async validate(token: string, tokenType: TokenTypeEnum): Promise<boolean> {
+  async validate(
+    token: string,
+    tokenType: TokenTypeEnum,
+    sub: string,
+  ): Promise<boolean> {
     try {
       const payload = await this.verify(token);
 
       if (payload.tokentype !== tokenType) return false;
+
+      if (payload.sub !== sub) return false;
 
       return true;
     } catch (error) {
