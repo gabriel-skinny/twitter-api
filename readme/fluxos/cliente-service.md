@@ -64,9 +64,6 @@
 ## Login Requirements:
 
 - Usuario consegue logar
-- Usuario consegue editar dados de perfil
-- Usuario consegue editar a senha quando esquecida
-- Usuario consegue deletar seu perfil
 - Usuario consegue deslogar
 - Usuario consegue deslogar todas as suas sessões
 
@@ -79,28 +76,6 @@
   - Cria registro de sessão para usuario
   - Retorna token JWT de acesso
 - Cache: Redis
-
-### Feature: Preencher dados de perfil
-
-- Cliente: Request HTTP
-- Rota: Autenticada
-- Api: uploadMedia(media, mediaName, mediaType): s3Url
-  - Baixa foto na S3
-  - Deixa disponivel no CDN
-- Api: registerUserInfo(bannerPictureS3Url, profilePictureS3Url, bio, location, website, birthDate, profileName)
-
-### Feature: Usuario consegue alterar sua senha
-
-- Cliente: Request HTTP
-- Rota: Autenticada
-- Api: validatePassword(password): passwordUpdateJWT
-- Rota: Autenticada para password update
-- Api: updatePassword(userId, newPassword)
-  - Verifica se o usuario existe
-  - Verifica se a password antiga passada bate com a salva no banco
-  - Verifica se a nova senha é diferente da antiga
-  - Verifica se a nova senha é diferente de
-  - Atualiza a password da senha
 
 ### Feature: Usuario consegue recuperar sua senha esquecida
 
@@ -144,3 +119,33 @@
 
 - Cliente: Verifica se
 - Api: getActiveUserSession(userId, ip): UserSession
+
+## User
+
+- Usuario consegue ver seu perfil
+- Usuario consegue listar outros perfis
+- Usuario consegue editar dados de perfil
+- Usuario consegue editar a senha quando esquecida
+- Usuario consegue deletar seu perfil
+
+### Feature: Preencher dados de perfil
+
+- Cliente: Request HTTP
+- Rota: Autenticada
+- Api: uploadMedia(media, mediaName, mediaType): s3Url
+  - Baixa foto na S3
+  - Deixa disponivel no CDN
+- Api: registerUserInfo(bannerPictureS3Url, profilePictureS3Url, bio, location, website, birthDate, profileName)
+
+### Feature: Usuario consegue alterar sua senha
+
+- Cliente: Request HTTP
+- Rota: Autenticada
+- Api: validatePassword(password): passwordUpdateJWT
+- Rota: Autenticada para password update
+- Api: updatePassword(userId, newPassword)
+  - Verifica se o usuario existe
+  - Verifica se a password antiga passada bate com a salva no banco
+  - Verifica se a nova senha é diferente da antiga
+  - Verifica se a nova senha é diferente de
+  - Atualiza a password da senha

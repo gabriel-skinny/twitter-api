@@ -2,6 +2,17 @@
 
 Tentativa de recriar uma api com a maioria das funcionalidades do twitter e que seja escalável.
 
+## High-Level Design
+
+## Services
+
+- [Client-Service](https://github.com/gabriel-skinny/twitter-api/blob/main/readme/Estudo-Database.md): Serviço que cuida dos Usuarios (Em desenvolvimento)
+- [Tweet-Service](): Servico que cuida dos Tweets do Usuario (Planejado)
+- [Feed-Service](): Servico que cuida do Feed dos Usuarios (Planejado)
+- [Follow-Service](): Servico que cuida da lógica de follow (Planejado)
+- [Search-Service](): Servico que cuida do mecanismo de busca de usuario (Planejado)
+- [Chat-Service](): Serviço que cuida da troca de mensagens entre usuarios
+
 ## Tabela de Conteúdos
 
 - [Estudos](#estudos)
