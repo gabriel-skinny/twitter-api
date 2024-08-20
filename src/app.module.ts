@@ -1,18 +1,10 @@
 import { DatabaseModule } from '@infra/database/database.module';
-import {
-  PreUserModel,
-  PreUserSchema,
-} from '@infra/database/mongodb/schemas/preUser';
-import { UserModel, UserSchema } from '@infra/database/mongodb/schemas/user';
-import {
-  UserSessionModel,
-  UserSessionSchema,
-} from '@infra/database/mongodb/schemas/userSession';
-import {
-  ValidationModel,
-  ValidationSchema,
-} from '@infra/database/mongodb/schemas/validation';
-import HttpModule from '@infra/http/http.module';
+import CodeValidationModule from '@infra/http/modules/codeValidation.module';
+import LoginModule from '@infra/http/modules/login.module';
+import RegisterModule from '@infra/http/modules/register.module';
+import UploadModule from '@infra/http/modules/upload.module';
+import UserModule from '@infra/http/modules/user.module';
+
 import { ServiceModule } from '@infra/services/service.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
@@ -41,7 +33,11 @@ const mongoUrl = `mongodb://${process.env.MONGODB_USER}:${process.env.MONGO_PASS
         },
       },
     }),
-    HttpModule,
+    CodeValidationModule,
+    LoginModule,
+    RegisterModule,
+    UploadModule,
+    UserModule,
     MongooseModule.forRoot(mongoUrl),
     DatabaseModule,
     ServiceModule,

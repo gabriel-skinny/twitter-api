@@ -12,5 +12,9 @@ export abstract class AbstractAuthService {
     userEmail: string;
     tokenType: TokenTypeEnum;
   }): Promise<string>;
-  abstract validate(token: string, tokenType: TokenTypeEnum): Promise<boolean>;
+  abstract validate(
+    token: string,
+    tokenType: TokenTypeEnum,
+    sub?: string,
+  ): Promise<boolean>;
 }
