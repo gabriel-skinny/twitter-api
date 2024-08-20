@@ -24,14 +24,14 @@ export default class AuthService implements AbstractAuthService {
   }
 
   async makeToken({
-    userEmail,
+    id,
     tokenType,
   }: {
-    userEmail: string;
+    id: string;
     tokenType: TokenTypeEnum;
   }): Promise<string> {
     return this.authProvider.signAsync({
-      sub: userEmail,
+      sub: id,
       tokentype: tokenType,
     });
   }
