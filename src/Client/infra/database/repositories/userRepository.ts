@@ -49,11 +49,7 @@ export default class UserRepository
     filter?: Omit<Partial<User>, 'name'> & { name?: string | RegExp };
     select?: { [K in keyof User]?: boolean };
   }): Promise<User[] | null> {
-    return this.userModel.find(
-      filter,
-      {},
-      { fields: select, limit, skip: skip },
-    );
+    return this.userModel.find(filter, {}, { fields: select, skip, limit });
   }
 
   async count(
