@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Password } from 'src/Client/application/entities/User/Password';
 import PreUser from 'src/Client/application/entities/User/preUser';
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
 import AbstractPreUserRepository from 'src/Client/application/repositories/preUser/preUserRepository';
 import AbstractUserRepository from '../../../repositories/user/userRepository';
 import { AbstractCreateValidationCodeUseCase } from '../../code-validation/create/create-validation-code';

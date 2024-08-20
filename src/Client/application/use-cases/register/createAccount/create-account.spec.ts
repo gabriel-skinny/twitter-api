@@ -1,11 +1,11 @@
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 import InMemoryPreUserRepositroy from 'src/Client/application/repositories/preUser/inMemoryPreUserRepository';
 import InMemoryUserRepositroy from '../../../repositories/user/inMemoryUserRepository';
 import AuthServiceStub from '../../../services/AuthServiceStub';
 import { makePreUser } from '../../../tests/factories/makePreUser';
 import ValidateAccountUseCase from './create-account-use-case';
 import { makeUser } from 'src/Client/application/tests/factories/makeUser';
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
 
 const makeUseCaseSut = () => {
   const preUserRepository = new InMemoryPreUserRepositroy();

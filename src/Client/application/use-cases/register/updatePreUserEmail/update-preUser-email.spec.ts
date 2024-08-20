@@ -1,5 +1,5 @@
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 import InMemoryPreUserRepositroy from 'src/Client/application/repositories/preUser/inMemoryPreUserRepository';
 import InMemoryUserRepositroy from '../../../repositories/user/inMemoryUserRepository';
 import { makePreUser } from '../../../tests/factories/makePreUser';

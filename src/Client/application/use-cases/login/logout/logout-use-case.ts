@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 import AbstractUserSessionRepository from 'src/Client/application/repositories/session/sessionRepository';
 
 export interface ILogoutUseCaseParams {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 import AbstractValidationRepository from 'src/Client/application/repositories/validation/validationRepository';
 import AbstractEmailService from 'src/Client/application/services/emailService';
 

@@ -6,7 +6,7 @@ import {
 import { ValidationCode } from '../../../entities/Validation/ValidationCode';
 import AbstractValidationRepository from '../../../repositories/validation/validationRepository';
 import { Injectable } from '@nestjs/common';
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
 
 export interface ICreateValidationCodeParams {
   email: string;

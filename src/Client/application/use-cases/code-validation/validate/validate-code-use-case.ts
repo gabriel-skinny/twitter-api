@@ -5,8 +5,8 @@ import {
   AbstractAuthService,
   TokenTypeEnum,
 } from '../../../services/AuthService';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 
 interface IValidateCodeUseCaseParams {
   email: string;

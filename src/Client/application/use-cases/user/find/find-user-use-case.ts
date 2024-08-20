@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import User from 'src/Client/application/entities/User/User';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 
 @Injectable()

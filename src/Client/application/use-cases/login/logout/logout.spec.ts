@@ -1,7 +1,7 @@
 import UserSession, {
   SessionDeviceTypesEnum,
 } from 'src/Client/application/entities/User/Session';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 import InMemoryUserSessionRepository from 'src/Client/application/repositories/session/inMemorySessionRepository';
 import LogoutUseCase from './logout-use-case';
 

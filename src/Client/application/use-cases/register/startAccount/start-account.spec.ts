@@ -1,4 +1,4 @@
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
 import InMemoryPreUserRepositroy from 'src/Client/application/repositories/preUser/inMemoryPreUserRepository';
 import InMemoryUserRepositroy from '../../../repositories/user/inMemoryUserRepository';
 import { makePreUser } from '../../../tests/factories/makePreUser';

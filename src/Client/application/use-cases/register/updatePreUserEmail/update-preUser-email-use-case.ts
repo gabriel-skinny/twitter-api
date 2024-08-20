@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import AbstractUserRepository from '../../../repositories/user/userRepository';
 import { AbstractUpdateEmailCodeValidationUseCase } from '../../code-validation/update-email/update-email-use-case';
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 
 interface IDataProps {
   preUserId: string;

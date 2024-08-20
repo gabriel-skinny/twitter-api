@@ -1,7 +1,7 @@
 import InMemoryUserRepositroy from 'src/Client/application/repositories/user/inMemoryUserRepository';
 import { FindManyUsersUseCase } from './find-many-users-use-case';
 import { makeUser } from 'src/Client/application/tests/factories/makeUser';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 
 const makeUseCaseSut = () => {
   const userRepository = new InMemoryUserRepositroy();

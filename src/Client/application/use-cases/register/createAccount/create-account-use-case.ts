@@ -4,8 +4,8 @@ import AbstractPreUserRepository from 'src/Client/application/repositories/preUs
 import User from '../../../entities/User/User';
 import AbstractUserRepository from '../../../repositories/user/userRepository';
 import { AbstractAuthService } from '../../../services/AuthService';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
 
 @Injectable()
 export default class CreateAccountUseCase {

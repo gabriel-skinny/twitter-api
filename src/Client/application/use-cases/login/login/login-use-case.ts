@@ -5,9 +5,9 @@ import AbstractSessionRepository from 'src/Client/application/repositories/sessi
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 import { AbstractAuthService } from 'src/Client/application/services/AuthService';
 import { Injectable } from '@nestjs/common';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
+import WrongValueError from 'src/Shared/errors/wrongValue';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
 
 interface ILoginUseCaseParams {
   email: string;

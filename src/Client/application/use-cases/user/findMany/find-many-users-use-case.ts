@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import User from 'src/Client/application/entities/User/User';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 
 interface IFindManyUserUseCaseParams {

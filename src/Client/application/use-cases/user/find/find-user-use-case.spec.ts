@@ -1,9 +1,9 @@
 import InMemoryUserRepositroy from 'src/Client/application/repositories/user/inMemoryUserRepository';
 import { makeUser } from 'src/Client/application/tests/factories/makeUser';
 import { Password } from 'src/Client/application/entities/User/Password';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 import { FindUserUseCase } from './find-user-use-case';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 
 const makeUseCaseSut = () => {
   const userRepository = new InMemoryUserRepositroy();

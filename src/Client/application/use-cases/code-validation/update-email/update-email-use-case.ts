@@ -1,7 +1,7 @@
 import { OperationToValidateTypeEnum } from 'src/Client/application/entities/Validation/Validation';
 import AbstractValidationRepository from '../../../repositories/validation/validationRepository';
 import { Injectable } from '@nestjs/common';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 
 export interface IUpdateEmailCodeValidationUseCaseParams {
   newEmail: string;

@@ -1,4 +1,4 @@
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 import InMemoryUserRepositroy from 'src/Client/application/repositories/user/inMemoryUserRepository';
 import { makeUser } from 'src/Client/application/tests/factories/makeUser';
 import UpdateAccountUseCase from './update-account-use-case';

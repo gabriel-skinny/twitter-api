@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Password } from 'src/Client/application/entities/User/Password';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 import AbstractUserRepository from 'src/Client/application/repositories/user/userRepository';
 
 interface IUpdatePasswordParams {

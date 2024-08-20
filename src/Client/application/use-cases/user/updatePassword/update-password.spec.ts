@@ -2,7 +2,7 @@ import InMemoryUserRepositroy from 'src/Client/application/repositories/user/inM
 import UpdatePasswordUseCase from './update-password-use-case';
 import { makeUser } from 'src/Client/application/tests/factories/makeUser';
 import { Password } from 'src/Client/application/entities/User/Password';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 
 const makeUseCaseSut = () => {
   const userRepository = new InMemoryUserRepositroy();

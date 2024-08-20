@@ -5,10 +5,10 @@ import InMemoryUserRepositroy from 'src/Client/application/repositories/user/inM
 import AuthServiceStub from 'src/Client/application/services/AuthServiceStub';
 import { makeUser } from 'src/Client/application/tests/factories/makeUser';
 import LoginUseCase from './login-use-case';
-import NotFoundCustomError from 'src/Client/application/errors/notFound';
-import WrongValueError from 'src/Client/application/errors/wrongValue';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 import { makeUserSession } from 'src/Client/application/tests/factories/makeUserSession';
-import AlreadyCreatedError from 'src/Client/application/errors/alreadyCreated';
+import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
 
 const makeUseCaseSut = () => {
   const userRepository = new InMemoryUserRepositroy();
