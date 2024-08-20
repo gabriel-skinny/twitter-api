@@ -9,7 +9,7 @@ export enum TokenTypeEnum {
 export abstract class AbstractAuthService {
   abstract makeLoginTokenToUser(user: User): Promise<string>;
   abstract makeToken(data: {
-    userEmail: string;
+    id: string;
     tokenType: TokenTypeEnum;
   }): Promise<string>;
   abstract validate(

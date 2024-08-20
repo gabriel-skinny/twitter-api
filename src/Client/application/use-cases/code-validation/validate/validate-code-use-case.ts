@@ -12,6 +12,7 @@ interface IValidateCodeUseCaseParams {
   email: string;
   validationCode: number;
   operationToValidateType: OperationToValidateTypeEnum;
+  id: string;
 }
 
 interface IValidateCodeUseCaseReturn {
@@ -29,6 +30,7 @@ export default class ValidateCodeUseCase {
     email,
     validationCode,
     operationToValidateType,
+    id,
   }: IValidateCodeUseCaseParams): Promise<IValidateCodeUseCaseReturn> {
     const validation = await this.validationRepository.findByEmailAndOperation({
       email,
@@ -45,14 +47,14 @@ export default class ValidateCodeUseCase {
       case OperationToValidateTypeEnum.EMAIL_CONFIRMATION: {
         jwtToken = await this.authService.makeToken({
           tokenType: TokenTypeEnum.EMAIL_CONFIRMATION,
-          userEmail: email,
+          id,
         });
         break;
       }
       case OperationToValidateTypeEnum.PASSWORD_CHANGE: {
         jwtToken = await this.authService.makeToken({
           tokenType: TokenTypeEnum.PASSWORD_CHANGE,
-          userEmail: email,
+          id,
         });
         break;
       }

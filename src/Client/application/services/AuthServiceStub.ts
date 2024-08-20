@@ -12,6 +12,7 @@ export default class AuthServiceStub extends AbstractAuthService {
   async makeToken(data: {
     userEmail: string;
     tokenType: TokenTypeEnum;
+    id: string;
   }): Promise<string> {
     return 'jwt_string_token';
   }
