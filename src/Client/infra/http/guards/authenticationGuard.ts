@@ -38,7 +38,10 @@ export class AuthenticationGuard implements CanActivate {
 
     const token = this.extractTokenFromHeader(request);
 
-    if (!(await this.authService.validate(token, authenticationType)))
+    let sub: string;
+    if (request?.params?.id) sub = request.params.id;
+
+    if (!(await this.authService.validate(token, authenticationType, sub)))
       throw new UnauthorizedException();
 
     return true;

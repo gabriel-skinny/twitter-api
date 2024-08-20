@@ -17,12 +17,15 @@ import { FindUserUseCase } from 'src/Client/application/use-cases/user/find/find
 import { FindManyUsersUseCase } from 'src/Client/application/use-cases/user/findMany/find-many-users-use-case';
 import UpdateAccountUseCase from 'src/Client/application/use-cases/user/update/update-account-use-case';
 import UpdatePasswordUseCase from 'src/Client/application/use-cases/user/updatePassword/update-password-use-case';
-import { AuthenticationTypeDecoretor } from '../decoretors/authenticationType';
+import {
+  AuthenticationTypeDecoretor,
+  IsPublicDecoretor,
+} from '../decoretors/authenticationType';
 import { UpdatePasswordDTO } from '../dto/login';
 import { UpdateUserDto } from '../dto/user';
 import { AuthenticationGuard } from '../guards/authenticationGuard';
 import { BaseControllerMethodInterface } from '../interface/baseController';
-import { BetwenNumberPipe } from '../pipes/perPage';
+import { BetwenNumberPipe } from '../pipes/betwenNumerPipe';
 import { UserPaginationViewModel, UserViewModel } from '../view-models/user';
 
 @UseGuards(AuthenticationGuard)
@@ -50,11 +53,11 @@ export class UserController {
     };
   }
 
-  @Get()
-  @AuthenticationTypeDecoretor(TokenTypeEnum.LOGIN)
+  @Get('many/users')
+  @IsPublicDecoretor()
   async getMany(
     @Query('name') name?: string,
-    @Query('perpage', new BetwenNumberPipe(0, 50)) perPage?: number,
+    @Query('perpage', new BetwenNumberPipe(0, 50)) perpage?: number,
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
   ): Promise<BaseControllerMethodInterface<UserPaginationViewModel>> {
     const { users, totalCount } = await this.findManyUsersUseCase.execute({
@@ -62,7 +65,7 @@ export class UserController {
         name,
       },
       page,
-      perPage,
+      perPage: perpage,
     });
 
     return {
@@ -71,7 +74,7 @@ export class UserController {
       data: new UserPaginationViewModel({
         users: users.map((user) => new UserViewModel(user)),
         page,
-        perPage,
+        perPage: perpage,
         total: totalCount,
       }),
     };

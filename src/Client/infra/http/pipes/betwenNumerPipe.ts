@@ -22,10 +22,12 @@ export class BetwenNumberPipe implements PipeTransform {
         HttpStatus.BAD_REQUEST,
       );
 
-    if (value > this.max || this.min <= 0)
+    if (Number(value) > this.max || this.min > Number(value))
       throw new HttpException(
         `${metadata.data} has less than ${this.max} and more than or equal to ${this.min}`,
         HttpStatus.BAD_REQUEST,
       );
+
+    return Number(value);
   }
 }
