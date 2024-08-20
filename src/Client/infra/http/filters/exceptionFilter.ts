@@ -17,6 +17,8 @@ export class CustomExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+    if (exception instanceof HttpException) status = exception.getStatus();
     if (exception instanceof NotFoundCustomError) status = HttpStatus.NOT_FOUND;
     if (
       exception instanceof AlreadyCreatedError ||
