@@ -43,14 +43,14 @@ export default class AuthService implements AbstractAuthService {
   async validate(
     token: string,
     tokenType: TokenTypeEnum,
-    sub: string,
+    sub?: string,
   ): Promise<boolean> {
     try {
       const payload = await this.verify(token);
 
       if (payload.tokentype !== tokenType) return false;
 
-      if (payload.sub !== sub) return false;
+      if (sub && sub !== payload.sub) return false;
 
       return true;
     } catch (error) {
