@@ -12,11 +12,15 @@ import WrongValueError from 'src/Client/application/errors/wrongValue';
 
 @Catch()
 export class CustomExceptionFilter implements ExceptionFilter {
-  catch(exception: Error, host: ArgumentsHost) {
+  catch(exception: Error | HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : exception.message;
 
     if (exception instanceof HttpException) status = exception.getStatus();
     if (exception instanceof NotFoundCustomError) status = HttpStatus.NOT_FOUND;
@@ -28,7 +32,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
 
     response.status(status).json({
       statusCode: status,
-      message: exception.message,
+      message,
     });
   }
 }
