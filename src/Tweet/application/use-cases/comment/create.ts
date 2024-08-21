@@ -1,21 +1,19 @@
 import AlreadyCreatedError from 'src/Shared/errors/alreadyCreated';
-import { Share } from '../../entities/Share';
-import AbstractShareRepository from '../../repositories/share';
-import AbstractMessageBroker, {
-  EVENT_TYPES_ENUM,
-} from '../../services/messageBroker';
-import AbstractTweetRepository from '../../repositories/tweet';
 import NotFoundCustomError from 'src/Shared/errors/notFound';
-import AbstractCommentRepository from '../../repositories/comment';
 import { Comment } from '../../entities/Comment';
 import { TweetTypesEnum } from '../../entities/baseTweet';
 import AbstractBaseTweetRepository from '../../repositories/base';
+import AbstractCommentRepository from '../../repositories/comment';
+import AbstractTweetRepository from '../../repositories/post';
+import AbstractMessageBroker, {
+  EVENT_TYPES_ENUM,
+} from '../../services/messageBroker';
 
 interface ICreateCommentUseCaseParams {
   userId: string;
   content: string;
   mediaUrl?: string;
-  tweetId: string;
+  creatorReferenceTweetId: string;
   parentId: string;
   parentType: TweetTypesEnum;
 }
@@ -32,11 +30,11 @@ export default class CreateCommentUseCase {
     userId,
     content,
     mediaUrl,
-    tweetId,
+    creatorReferenceTweetId,
     parentId,
     parentType,
   }: ICreateCommentUseCaseParams) {
-    if (!(await this.tweetRepository.existsById(tweetId)))
+    if (!(await this.tweetRepository.existsById(creatorReferenceTweetId)))
       throw new NotFoundCustomError('Tweet does not exists');
 
     if (!(await this.baseTweetRepository.existsById(parentId)))
@@ -55,7 +53,7 @@ export default class CreateCommentUseCase {
       userId,
       content,
       mediaUrl,
-      tweetId,
+      creatorReferenceTweetId,
       parentId,
       parentType,
     });
@@ -64,7 +62,7 @@ export default class CreateCommentUseCase {
 
     await this.messageBrokerService.sendEvent({
       eventType: EVENT_TYPES_ENUM.TWEET_COMMENTED,
-      data: { userId, tweetId, commentId: comment.id },
+      data: { userId, creatorReferenceTweetId, commentId: comment.id },
     });
   }
 }
