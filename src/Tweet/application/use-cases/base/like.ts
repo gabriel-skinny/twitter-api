@@ -30,7 +30,7 @@ export class LikeBaseTweetUseCase<T extends BaseTweet> {
 
     await this.messageBrokerService.sendEvent({
       eventType: EVENT_TYPES_ENUM.TWEET_LIKED,
-      data: { userId: baseTweet.userId, baseTweetId, requesterUserId },
+      data: { userId: baseTweet.userId, tweetId: baseTweetId, requesterUserId },
     });
   }
 }
