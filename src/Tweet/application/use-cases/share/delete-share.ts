@@ -20,7 +20,11 @@ export default class DeleteShareUseCase {
 
     await this.messageBrokerService.sendEvent({
       eventType: EVENT_TYPES_ENUM.TWEET_UNSHARED,
-      data: { shareId, userId: share.userId, tweetId: share.tweetId },
+      data: {
+        shareId,
+        userId: share.userId,
+        creatorReferenceTweetId: share.creatorReferenceTweetId,
+      },
     });
   }
 }
