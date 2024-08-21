@@ -6,6 +6,8 @@ import AbstractMessageBroker, {
 } from '../../services/messageBroker';
 import AbstractTweetRepository from '../../repositories/tweet';
 import NotFoundCustomError from 'src/Shared/errors/notFound';
+import { TweetTypesEnum } from '../../entities/baseTweet';
+import AbstractBaseTweetRepository from '../../repositories/base';
 
 interface ICreateShareUseCaseParams {
   userId: string;
@@ -13,6 +15,7 @@ interface ICreateShareUseCaseParams {
   mediaUrl?: string;
   tweetId: string;
   parentId: string;
+  parentType: TweetTypesEnum;
 }
 
 export default class CreateShareUseCase {
@@ -20,6 +23,7 @@ export default class CreateShareUseCase {
     private tweetRepository: AbstractTweetRepository,
     private shareRepository: AbstractShareRepository,
     private messageBrokerService: AbstractMessageBroker,
+    private baseTweetRepository: AbstractBaseTweetRepository,
   ) {}
 
   async execute({
@@ -28,9 +32,14 @@ export default class CreateShareUseCase {
     mediaUrl,
     tweetId,
     parentId,
+    parentType,
   }: ICreateShareUseCaseParams) {
     if (!(await this.tweetRepository.existsById(tweetId)))
       throw new NotFoundCustomError('Tweet does not exists');
+
+    if (!(await this.baseTweetRepository.existsById(parentId)))
+      throw new NotFoundCustomError('Parent not found');
+
     if (
       await this.shareRepository.existsByUserIdAndParentId({
         parentId,
@@ -45,6 +54,7 @@ export default class CreateShareUseCase {
       mediaUrl,
       tweetId,
       parentId,
+      parentType,
     });
 
     await this.shareRepository.save(share);
