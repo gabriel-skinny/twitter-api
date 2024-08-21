@@ -4,25 +4,24 @@ import AbstractShareRepository from '../../repositories/share';
 import AbstractMessageBroker, {
   EVENT_TYPES_ENUM,
 } from '../../services/messageBroker';
-import AbstractTweetRepository from '../../repositories/tweet';
+import AbstractTweetRepository from '../../repositories/post';
 import NotFoundCustomError from 'src/Shared/errors/notFound';
 import { TweetTypesEnum } from '../../entities/baseTweet';
 import AbstractBaseTweetRepository from '../../repositories/base';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 
 interface ICreateShareUseCaseParams {
   userId: string;
   content: string;
   mediaUrl?: string;
-  tweetId: string;
+  creatorReferenceTweetId: string;
   parentId: string;
-  parentType: TweetTypesEnum;
 }
 
 export default class CreateShareUseCase {
   constructor(
-    private tweetRepository: AbstractTweetRepository,
-    private shareRepository: AbstractShareRepository,
     private messageBrokerService: AbstractMessageBroker,
+    private shareRepository: AbstractShareRepository,
     private baseTweetRepository: AbstractBaseTweetRepository,
   ) {}
 
@@ -30,15 +29,26 @@ export default class CreateShareUseCase {
     userId,
     content,
     mediaUrl,
-    tweetId,
+    creatorReferenceTweetId,
     parentId,
-    parentType,
   }: ICreateShareUseCaseParams) {
-    if (!(await this.tweetRepository.existsById(tweetId)))
-      throw new NotFoundCustomError('Tweet does not exists');
+    const creatorReferenceTweet = await this.baseTweetRepository.findById(
+      creatorReferenceTweetId,
+    );
+    if (!creatorReferenceTweet)
+      throw new NotFoundCustomError('Reference tweet does not exists');
 
-    if (!(await this.baseTweetRepository.existsById(parentId)))
-      throw new NotFoundCustomError('Parent not found');
+    if (creatorReferenceTweet.type == TweetTypesEnum.COMMENT)
+      throw new WrongValueError('CreatorReference cannot be a comment');
+
+    const parentBaseTweet = await this.baseTweetRepository.findById(parentId);
+    if (!parentBaseTweet) throw new NotFoundCustomError('Parent not found');
+
+    if (
+      parentBaseTweet.creatorReferenceTweetId &&
+      parentBaseTweet.creatorReferenceTweetId != creatorReferenceTweetId
+    )
+      throw new WrongValueError('Tweet id of parent is diferent for the share');
 
     if (
       await this.shareRepository.existsByUserIdAndParentId({
@@ -52,16 +62,16 @@ export default class CreateShareUseCase {
       userId,
       content,
       mediaUrl,
-      tweetId,
+      creatorReferenceTweetId,
       parentId,
-      parentType,
+      parentType: parentBaseTweet.type,
     });
 
     await this.shareRepository.save(share);
 
     await this.messageBrokerService.sendEvent({
       eventType: EVENT_TYPES_ENUM.TWEET_SHARED,
-      data: { userId, tweetId, shareId: share.id },
+      data: { userId, tweetId: creatorReferenceTweetId, shareId: share.id },
     });
   }
 }
