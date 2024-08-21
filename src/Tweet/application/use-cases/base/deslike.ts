@@ -1,10 +1,9 @@
 import NotFoundCustomError from 'src/Shared/errors/notFound';
-import AbstractTweetRepository from '../../repositories/tweet';
+import { BaseTweet } from '../../entities/baseTweet';
+import AbstractBaseTweetRepository from '../../repositories/base';
 import AbstractMessageBroker, {
   EVENT_TYPES_ENUM,
 } from '../../services/messageBroker';
-import { BaseTweet } from '../../entities/baseTweet';
-import AbstractBaseTweetRepository from '../../repositories/base';
 
 interface IDeslikeBaseTweetUseCaseParams {
   tweetId: string;
