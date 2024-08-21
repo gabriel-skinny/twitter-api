@@ -1,8 +1,12 @@
 import { TweetTypesEnum } from '../../entities/baseTweet';
-import { Tweet } from '../../entities/Tweet';
+import { Post } from '../../entities/Post';
+import AbstractPostRepository from '../../repositories/post';
 import { InMemoryBaseTweetRepository } from './inMemoryBaseTweetRepository';
 
-export class InMemoryTweetRepository extends InMemoryBaseTweetRepository<Tweet> {
+export class InMemoryPostRepository
+  extends InMemoryBaseTweetRepository<Post>
+  implements AbstractPostRepository
+{
   constructor() {
     super(TweetTypesEnum.POST);
   }

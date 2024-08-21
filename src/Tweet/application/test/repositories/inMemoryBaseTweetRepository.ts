@@ -4,22 +4,24 @@ import AbstractBaseTweetRepository from '../../repositories/base';
 export class InMemoryBaseTweetRepository<T extends BaseTweet>
   implements AbstractBaseTweetRepository
 {
-  public baseTweetDatabase: BaseTweet[] = [];
-  private _type: TweetTypesEnum;
+  public baseTweetDatabase: T[] = [];
+  private _type?: TweetTypesEnum;
 
-  constructor(type: TweetTypesEnum) {
+  constructor(type?: TweetTypesEnum) {
     this._type = type;
   }
 
   async save(data: T): Promise<void> {
-    this.baseTweetDatabase.push({ ...data });
+    this.baseTweetDatabase.push(data);
   }
 
   async existsById(id: string): Promise<boolean> {
+    console.log({ id, database: this.baseTweetDatabase });
+
     return !!this.baseTweetDatabase.find((t) => t.id == id);
   }
 
-  async findById(id: string): Promise<BaseTweet> {
+  async findById(id: string): Promise<T | null> {
     return this.baseTweetDatabase.find((t) => t.id == id);
   }
 
@@ -30,9 +32,9 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
   async updateById(data: { id: string; data: Partial<T> }): Promise<void> {
     const foundIndex = this.baseTweetDatabase.findIndex((t) => t.id == data.id);
 
-    this.baseTweetDatabase[foundIndex] = {
-      ...this.baseTweetDatabase[foundIndex],
-      ...data.data,
-    } as any;
+    this.baseTweetDatabase[foundIndex] = Object.assign(
+      this.baseTweetDatabase[foundIndex],
+      data.data,
+    );
   }
 }
