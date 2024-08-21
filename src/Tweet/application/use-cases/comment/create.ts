@@ -8,6 +8,8 @@ import AbstractTweetRepository from '../../repositories/tweet';
 import NotFoundCustomError from 'src/Shared/errors/notFound';
 import AbstractCommentRepository from '../../repositories/comment';
 import { Comment } from '../../entities/Comment';
+import { TweetTypesEnum } from '../../entities/baseTweet';
+import AbstractBaseTweetRepository from '../../repositories/base';
 
 interface ICreateCommentUseCaseParams {
   userId: string;
@@ -15,6 +17,7 @@ interface ICreateCommentUseCaseParams {
   mediaUrl?: string;
   tweetId: string;
   parentId: string;
+  parentType: TweetTypesEnum;
 }
 
 export default class CreateCommentUseCase {
@@ -22,6 +25,7 @@ export default class CreateCommentUseCase {
     private tweetRepository: AbstractTweetRepository,
     private commentRepository: AbstractCommentRepository,
     private messageBrokerService: AbstractMessageBroker,
+    private baseTweetRepository: AbstractBaseTweetRepository,
   ) {}
 
   async execute({
@@ -30,13 +34,19 @@ export default class CreateCommentUseCase {
     mediaUrl,
     tweetId,
     parentId,
+    parentType,
   }: ICreateCommentUseCaseParams) {
     if (!(await this.tweetRepository.existsById(tweetId)))
-      throw new NotFoundCustomError('Parent does not exists');
+      throw new NotFoundCustomError('Tweet does not exists');
+
+    if (!(await this.baseTweetRepository.existsById(parentId)))
+      throw new NotFoundCustomError('Parent not found');
+
     if (
       await this.commentRepository.existsByUserIdAndParentId({
         parentId,
         userId,
+        parentType,
       })
     )
       throw new AlreadyCreatedError('Can not comment twice the same post');
@@ -47,6 +57,7 @@ export default class CreateCommentUseCase {
       mediaUrl,
       tweetId,
       parentId,
+      parentType,
     });
 
     await this.commentRepository.save(comment);
