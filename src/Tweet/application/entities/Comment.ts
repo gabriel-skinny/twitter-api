@@ -1,31 +1,26 @@
-import {
-  BaseTweet,
-  IChildProps,
-  IPropsBaseTweet,
-  TweetTypesEnum,
-} from './baseTweet';
+import { BaseTweet, IChildProps, TweetTypesEnum } from './baseTweet';
 
 type IPropsComment = IChildProps & {
-  tweetId: string;
+  creatorReferenceTweetId: string;
   parentId: string;
   parentType: TweetTypesEnum;
 };
 
 export class Comment extends BaseTweet {
-  private _tweetId: string;
+  private _creatorReferenceTweetId: string;
   private _parentId: string;
   private _parentType: TweetTypesEnum;
 
   constructor(props: IPropsComment) {
     super({ ...props, type: TweetTypesEnum.COMMENT });
 
-    this._tweetId = props.tweetId;
+    this._creatorReferenceTweetId = props.creatorReferenceTweetId;
     this._parentId = props.parentId;
     this._parentType = props.parentType;
   }
 
-  public get tweetId() {
-    return this._tweetId;
+  public get creatorReferenceTweetId() {
+    return this._creatorReferenceTweetId;
   }
 
   public get parentId() {

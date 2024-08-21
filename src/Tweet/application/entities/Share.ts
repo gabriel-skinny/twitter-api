@@ -1,30 +1,25 @@
-import {
-  BaseTweet,
-  IChildProps,
-  IPropsBaseTweet,
-  TweetTypesEnum,
-} from './baseTweet';
+import { BaseTweet, IChildProps, TweetTypesEnum } from './baseTweet';
 
 type IPropsShare = IChildProps & {
-  tweetId: string;
+  creatorReferenceTweetId: string;
   parentId: string;
   parentType: TweetTypesEnum;
 };
 
 export class Share extends BaseTweet {
-  private _tweetId: string;
+  private _creatorReferenceTweetId: string;
   private _parentId: string;
-  private _parentType: string;
+  private _parentType: TweetTypesEnum;
 
   constructor(props: IPropsShare) {
     super({ ...props, type: TweetTypesEnum.SHARE });
-    this._tweetId = props.tweetId;
+    this._creatorReferenceTweetId = props.creatorReferenceTweetId;
     this._parentId = props.parentId;
     this._parentType = props.parentType;
   }
 
-  public get tweetId() {
-    return this._tweetId;
+  public get creatorReferenceTweetId() {
+    return this._creatorReferenceTweetId;
   }
 
   public get parentId() {

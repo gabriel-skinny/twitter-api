@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { Share } from './Share';
 import { Comment } from './Comment';
+import NotFoundCustomError from 'src/Shared/errors/notFound';
 
 export enum TweetTypesEnum {
   POST = 'post',
@@ -9,6 +10,7 @@ export enum TweetTypesEnum {
 }
 
 export type IChildProps = Omit<IPropsBaseTweet, 'type'>;
+type LikeType = { [userId: string]: boolean };
 
 export interface IPropsBaseTweet {
   id?: string;
@@ -18,23 +20,33 @@ export interface IPropsBaseTweet {
   active?: boolean;
   mediaUrl?: string;
   share?: Share[];
-  likes?: { [userId: string]: boolean };
+  likes?: LikeType;
   commentary?: Comment[];
+  creatorReferenceTweetId?: string;
+  parentId?: string;
+  parentType?: TweetTypesEnum;
   createdAt?: Date;
 }
 
-type IRawValues = Omit<IPropsBaseTweet, 'id' | 'createdAt' | 'active'>;
+type IRawValues = Omit<
+  IPropsBaseTweet,
+  'id' | 'createdAt' | 'active' | 'likes'
+>;
 
 export class BaseTweet {
   private _id: string;
   private _createdAt: Date;
   private _active: boolean;
+  private _likes: LikeType;
   private _rawValues: IRawValues;
 
   constructor(props: IPropsBaseTweet) {
     this._id = props.id || randomUUID();
     this._createdAt = props.createdAt || new Date();
     this._active = props.active || true;
+    this._likes = props.likes || {};
+
+    this._rawValues = { ...props };
   }
 
   public get id() {
@@ -61,17 +73,19 @@ export class BaseTweet {
   }
 
   public get likes() {
-    return this._rawValues.likes;
+    return this._likes;
   }
 
   public like(requesterUserId: string) {
-    if (this._rawValues.likes[requesterUserId])
-      throw new Error('Already liked');
-    else this._rawValues.likes[requesterUserId] = true;
+    if (this._likes[requesterUserId]) throw new Error('Already liked');
+    else this._likes[requesterUserId] = true;
   }
 
   public deslike(requesterUserId: string) {
-    this._rawValues.likes[requesterUserId] = false;
+    if (!this._likes[requesterUserId])
+      throw new NotFoundCustomError('Like not found');
+
+    this._likes[requesterUserId] = false;
   }
 
   public get commentary() {
@@ -80,6 +94,18 @@ export class BaseTweet {
 
   public get active() {
     return this._active;
+  }
+
+  public get creatorReferenceTweetId() {
+    return this._rawValues.creatorReferenceTweetId;
+  }
+
+  public get parentId() {
+    return this._rawValues.parentId;
+  }
+
+  public get parentType() {
+    return this._rawValues.parentType;
   }
 
   public get createdAt() {
