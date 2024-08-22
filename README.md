@@ -445,3 +445,5 @@ UserInfo: { id: string, profilePictureUrl: string, name: string, bio: string}
 ## Links
 
 Twitter system design mock interview (https://www.youtube.com/watch?v=3yW856jAbZA)
+System Design Twitter (https://www.youtube.com/watch?v=_QqpD0w8oPM)
+Twitter System Design (https://www.youtube.com/watch?v=wYk0xPP_P_8)
