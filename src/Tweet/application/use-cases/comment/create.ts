@@ -8,6 +8,7 @@ import AbstractTweetRepository from '../../repositories/post';
 import AbstractMessageBroker, {
   EVENT_TYPES_ENUM,
 } from '../../services/messageBroker';
+import WrongValueError from 'src/Shared/errors/wrongValue';
 
 interface ICreateCommentUseCaseParams {
   userId: string;
@@ -15,12 +16,10 @@ interface ICreateCommentUseCaseParams {
   mediaUrl?: string;
   creatorReferenceTweetId: string;
   parentId: string;
-  parentType: TweetTypesEnum;
 }
 
 export default class CreateCommentUseCase {
   constructor(
-    private tweetRepository: AbstractTweetRepository,
     private commentRepository: AbstractCommentRepository,
     private messageBrokerService: AbstractMessageBroker,
     private baseTweetRepository: AbstractBaseTweetRepository,
@@ -32,22 +31,28 @@ export default class CreateCommentUseCase {
     mediaUrl,
     creatorReferenceTweetId,
     parentId,
-    parentType,
   }: ICreateCommentUseCaseParams) {
-    if (!(await this.tweetRepository.existsById(creatorReferenceTweetId)))
-      throw new NotFoundCustomError('Tweet does not exists');
+    const creatorReferenceTweet = await this.baseTweetRepository.findById(
+      creatorReferenceTweetId,
+    );
+    if (!creatorReferenceTweet)
+      throw new NotFoundCustomError('Reference tweet does not exists');
 
-    if (!(await this.baseTweetRepository.existsById(parentId)))
-      throw new NotFoundCustomError('Parent not found');
+    if (creatorReferenceTweet.type == TweetTypesEnum.COMMENT)
+      throw new WrongValueError('CreatorReference cannot be a comment');
 
-    if (
-      await this.commentRepository.existsByUserIdAndParentId({
-        parentId,
-        userId,
-        parentType,
-      })
-    )
-      throw new AlreadyCreatedError('Can not comment twice the same post');
+    const parentBaseTweet = await this.baseTweetRepository.findById(parentId);
+    if (!parentBaseTweet) throw new NotFoundCustomError('Parent not found');
+
+    if (parentBaseTweet.type == TweetTypesEnum.COMMENT) {
+      if (parentBaseTweet.creatorReferenceTweetId !== creatorReferenceTweetId)
+        throw new WrongValueError('Comment has to be the same reference');
+    } else {
+      if (parentBaseTweet.id !== creatorReferenceTweetId)
+        throw new WrongValueError(
+          'Comment of a Post or Share has to have the creatorReference being their id',
+        );
+    }
 
     const comment = new Comment({
       userId,
@@ -55,7 +60,7 @@ export default class CreateCommentUseCase {
       mediaUrl,
       creatorReferenceTweetId,
       parentId,
-      parentType,
+      parentType: parentBaseTweet.type,
     });
 
     await this.commentRepository.save(comment);
