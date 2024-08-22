@@ -212,64 +212,56 @@ describe('Create comment use case', () => {
       );
     });
 
-    it('Should throw a WrongValue exception if the parent tweetId is different than the tweet id passed', async () => {
+    it('if the parent tweet is a Comment and their creatorReference is different than the one passed should throw a WrongValue exception', async () => {
       const { createCommentUseCase, baseTweetRepository } = makeSut();
 
       const tweet = makePost();
       await baseTweetRepository.save(tweet);
 
-      const commentFromDifferentTweet = makeComment({
+      const parentCommentWihtOtherReference = makeComment({
         parentId: 'diferentTweetId',
         parentType: TweetTypesEnum.POST,
-        creatorReferenceTweetId: 'diferenteTweetId',
+        creatorReferenceTweetId: 'diferenteReferenceId',
       });
-      await baseTweetRepository.save(commentFromDifferentTweet);
+      await baseTweetRepository.save(parentCommentWihtOtherReference);
 
       const promiseUseCase = createCommentUseCase.execute({
         userId: 'User',
         content: 'Compartilhamento do post legal',
-        parentId: commentFromDifferentTweet.id,
+        parentId: parentCommentWihtOtherReference.id,
         creatorReferenceTweetId: tweet.id,
       });
 
       expect(promiseUseCase).rejects.toStrictEqual(
-        new WrongValueError('Tweet id of parent is diferent for the share'),
+        new WrongValueError('Comment has to be the same reference'),
       );
     });
 
-    it('Should throw a AlreadyCreatedError execption if the tweet was already shared', async () => {
+    it('if parent type is not a Comment and their id are not the creatorReference passed should trhow a WrongValueError', async () => {
       const { createCommentUseCase, baseTweetRepository, commentRepository } =
         makeSut();
 
       const tweet = makePost();
       await baseTweetRepository.save(tweet);
 
-      const alreadySharedComment = makeComment({
+      const parentShare = makeShare({
         parentId: tweet.id,
         parentType: TweetTypesEnum.POST,
         creatorReferenceTweetId: tweet.id,
       });
-      await baseTweetRepository.save(alreadySharedComment);
-
-      const shareUserId = 'userId';
-      await commentRepository.save(
-        makeComment({
-          parentId: alreadySharedComment.id,
-          parentType: TweetTypesEnum.COMMENT,
-          creatorReferenceTweetId: tweet.id,
-          userId: shareUserId,
-        }),
-      );
+      await baseTweetRepository.save(parentShare);
 
       const promiseUseCase = createCommentUseCase.execute({
-        userId: shareUserId,
+        userId: 'userId',
         content: 'Compartilhamento do post legal',
-        parentId: alreadySharedComment.id,
+        parentId: parentShare.id,
         creatorReferenceTweetId: tweet.id,
       });
 
       expect(promiseUseCase).rejects.toStrictEqual(
-        new AlreadyCreatedError('Can not share twice the same post'),
+        new WrongValueError(
+          'Comment of a Post or Share has to have the creatorReference being their id',
+        ),
       );
     });
   });
