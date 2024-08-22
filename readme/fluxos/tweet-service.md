@@ -10,8 +10,9 @@
 - Usuario consegue descompartilhar um tweet
 - Usuario consegue curtir e descurtir um compartilhamento
 - Usuario consegue comentar e descomentar em um compartilhamento
+- Usuario consegue ver seus compartilhamentos
 
-- Usuario consegue comentar em um tweet
+- Usuario consegue comentar um tweet
 - Usuario consegue apagar o comentário de um tweet
 - Usuario consegue curtir e descurtir um comentário
 - Usuario consegue compartilhas e descompartilhar um comentário
@@ -70,6 +71,16 @@ Suposição:
 - Um post pode chegar a ter 1m de likes
 - Um post tem em media 10k de likes
 
+## Feature: Usuario consegue ver seus posts
+
+- Cliente: Request Http
+- Rota autenticada
+- Api: getPosts(userId, page, perPage, order)
+  - Pega os posts do usuario do banco
+  - Conta os likes, compartilhamentos e comentarios
+  - Retorno: [{content: string; media?: string; likeNumber: number; shareNumber: number; commentNumber: number;}]
+  - Salvar requisição para esse userId no cache do HTTP
+
 ## Feature: Usuario compartilhar um post
 
 - Cliente: Request Http
@@ -90,6 +101,17 @@ Suposição:
   - Envia evento de post descompartilhado ao Kafka
 - Database: MongoDb
 
+## Feature: Usuario consegue ver seus compartilhamentos
+
+- Cliente: Request Http
+- Rota autenticada
+- Api: getPosts(userId, page, perPage)
+  - Pega os ultimos compartilhamentos do usuario do banco
+  - Lista junto com os Posts ou Comentarios relacionados ao compartilhamento
+    - Retorno: [{content: string; media?: string; likeNumber: number; shareNumber: number; commentNumber: number; postReferece: Post}]
+  - Salvar requisição para esse userId no cache do HTTP
+- Database: MongoDb
+
 ## Feature : Usuario consegue fazer um comentário
 
 - Cliente: Request Http
@@ -99,12 +121,14 @@ Suposição:
   - Invalida o cache do post
 - Database: MongoDb
 
-## Feature: Usuario consegue ver os comentários de um post
+## Feature: Usuario consegue ver os comentários de um tweet
 
 - Cliente: Request Http
 - Rota autenticada
-- Api: getCommentsByPostId(postId)
-  - Faz query pegando as informações do post e os comentarios atrelados aquele PostId
+- Api: getCommentsByParenttId(parentId, page, perPage)
+  - Faz query pegando as informações do post e os comentarios atrelados àquele PostId
+  - Pega os likes, comentarios e compartilhamentos
+  - Retorna com a informação do tweet relacionado ao ParentId e ao creatorReferenceId
   - retorno: Comments[]
 - Banco: MongoDb
 
