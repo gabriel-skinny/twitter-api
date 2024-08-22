@@ -7,7 +7,7 @@ import DeleteShareUseCase from '../comment/delete';
 
 describe('Delete tweet use case', () => {
   it('Should delete a share', async () => {
-    const { useCase, messageBrocker, tweetRepository } =
+    const { useCase, messageBrocker, postRepository } =
       makeGenericSut<DeleteShareUseCase>({
         UseCaseClass: DeleteShareUseCase,
       });
@@ -17,20 +17,24 @@ describe('Delete tweet use case', () => {
     const share = makeShare({
       parentId: 'parentId',
       parentType: TweetTypesEnum.POST,
-      tweetId: 'id',
+      creatorReferenceTweetId: 'id',
     });
-    await tweetRepository.save(share);
+    await postRepository.save(share);
 
     await useCase.execute(share.id);
 
-    expect(tweetRepository.baseTweetDatabase).toHaveLength(0);
+    expect(postRepository.baseTweetDatabase).toHaveLength(0);
     expect(messageBrocker.sendEvent).toHaveBeenCalledWith({
       eventType: EVENT_TYPES_ENUM.TWEET_UNSHARED,
-      data: { shareId: share.id, userId: share.userId, tweetId: share.tweetId },
+      data: {
+        shareId: share.id,
+        userId: share.userId,
+        tweetId: share.creatorReferenceTweetId,
+      },
     });
   });
 
-  it('Should thrown an error with the share does not exists', async () => {
+  it('Should thrown an error if the share does not exists', async () => {
     const { useCase, messageBrocker } = makeGenericSut<DeleteShareUseCase>({
       UseCaseClass: DeleteShareUseCase,
     });
