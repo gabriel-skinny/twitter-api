@@ -16,8 +16,6 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
   }
 
   async existsById(id: string): Promise<boolean> {
-    console.log({ id, database: this.baseTweetDatabase });
-
     return !!this.baseTweetDatabase.find((t) => t.id == id);
   }
 
