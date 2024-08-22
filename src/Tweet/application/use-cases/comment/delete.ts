@@ -1,28 +1,29 @@
 import NotFoundCustomError from 'src/Shared/errors/notFound';
-import AbstractShareRepository from '../../repositories/share';
+import AbstractCommentRepository from '../../repositories/comment';
 import AbstractMessageBroker, {
   EVENT_TYPES_ENUM,
 } from '../../services/messageBroker';
 
-export default class DeleteShareUseCase {
+export default class DeleteCommentUseCase {
   constructor(
-    private shareRepository: AbstractShareRepository,
+    private commentRepository: AbstractCommentRepository,
     private messageBrokerService: AbstractMessageBroker,
   ) {}
 
-  async execute(shareId: string) {
-    const share = await this.shareRepository.findById(shareId);
+  async execute(commentId: string) {
+    const comment = await this.commentRepository.findById(commentId);
 
-    if (!share) throw new NotFoundCustomError('Share not found');
+    if (!comment) throw new NotFoundCustomError('Comment not found');
 
-    await this.shareRepository.deleteById(share.id);
+    await this.commentRepository.deleteById(comment.id);
 
     await this.messageBrokerService.sendEvent({
-      eventType: EVENT_TYPES_ENUM.TWEET_UNSHARED,
+      eventType: EVENT_TYPES_ENUM.TWEET_UNCOMMENTED,
       data: {
-        shareId,
-        userId: share.userId,
-        creatorReferenceTweetId: share.creatorReferenceTweetId,
+        commentId,
+        userId: comment.userId,
+        creatorReferenceTweetId: comment.creatorReferenceTweetId,
+        parentId: comment.parentId,
       },
     });
   }
