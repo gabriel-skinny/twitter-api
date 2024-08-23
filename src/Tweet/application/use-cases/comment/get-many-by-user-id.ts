@@ -1,14 +1,75 @@
-import { TweetTypesEnum } from '../../entities/baseTweet';
+import { Comment } from '../../entities/Comment';
+import AbstractCommentRepository from '../../repositories/comment';
+import {
+  AbstractGetTweetBaseByIdUseCase,
+  IGetBaseTweet,
+} from '../base/get-by-id';
 
-interface IFindManyCommentsUseCaseParams {
-  parentId: string;
-  parentType: TweetTypesEnum;
+interface IGetCommentByUserIdParams {
+  userId: string;
+  page?: number;
+  perPage?: number;
+  order?: 'Desc' | 'Asc';
+  orderBy?: { id?: boolean; createdAt?: boolean };
 }
 
-export class FindManyCommentsUseCase {
-  constructor() {}
+interface IGetCommentByUserIdReturn {
+  parentTweetInfo: IGetBaseTweet | null;
+  creatorRefereceInfo?: IGetBaseTweet | null;
+  comment: Comment;
+  likeNumber: number;
+  shareNumber: number;
+  commentNumber: number;
+}
 
-  execute(params: IFindManyCommentsUseCaseParams) {
-    // Find com creator reference include
+export class GetCommentsByUserId {
+  constructor(
+    private readonly commentRepository: AbstractCommentRepository,
+    private readonly getTweetBaseByIdUseCase: AbstractGetTweetBaseByIdUseCase,
+  ) {}
+
+  async execute({
+    userId,
+    page,
+    perPage,
+    orderBy,
+    order,
+  }: IGetCommentByUserIdParams): Promise<IGetCommentByUserIdReturn[]> {
+    const comments = await this.commentRepository.findManyByUserId({
+      userId,
+      limit: perPage,
+      skip: page * perPage - perPage,
+      order,
+      orderBy,
+    });
+
+    const returnFormat: IGetCommentByUserIdReturn[] = [];
+
+    for (const comment of comments) {
+      const parentTweetInfo = await this.getTweetBaseByIdUseCase.execute(
+        comment.parentId,
+      );
+      let creatorRefereceInfo: IGetBaseTweet | null;
+      if (comment.parentId !== comment.creatorReferenceTweetId) {
+        creatorRefereceInfo = await this.getTweetBaseByIdUseCase.execute(
+          comment.creatorReferenceTweetId,
+        );
+      }
+
+      const commentInfo = await this.getTweetBaseByIdUseCase.execute(
+        comment.id,
+      );
+
+      returnFormat.push({
+        comment,
+        commentNumber: commentInfo.commentNumber,
+        likeNumber: commentInfo.likeNumber,
+        shareNumber: commentInfo.shareNumber,
+        parentTweetInfo,
+        creatorRefereceInfo,
+      });
+    }
+
+    return returnFormat;
   }
 }
