@@ -1,9 +1,9 @@
-import { TweetTypesEnum } from '../../entities/baseTweet';
-import { Post } from '../../entities/Post';
 import { Share } from '../../entities/Share';
-import AbstractBaseTweetRepository from '../../repositories/base';
 import AbstractShareRepository from '../../repositories/share';
-import { GetTweetBaseByIdUseCase } from '../base/get-by-id';
+import {
+  AbstractGetTweetBaseByIdUseCase,
+  IGetBaseTweet,
+} from '../base/get-by-id';
 
 interface IGetShareByUserIdParams {
   userId: string;
@@ -14,23 +14,17 @@ interface IGetShareByUserIdParams {
 }
 
 interface IGetShareByUserIdReturn {
-  tweetShared: {
-    tweet: Post | Share | Comment | null;
-    likeNumber: number;
-    shareNumber: number;
-    commentNumber: number;
-  };
+  tweetShared: IGetBaseTweet;
   share: Share;
   likeNumber: number;
   shareNumber: number;
   commentNumber: number;
 }
 
-export class GetShareByUserId {
+export class GetSharesByUserId {
   constructor(
     private readonly shareRepository: AbstractShareRepository,
-    private readonly baseTweetRepository: AbstractBaseTweetRepository,
-    private readonly getTweetBaseByIdUseCase: GetTweetBaseByIdUseCase,
+    private readonly getTweetBaseByIdUseCase: AbstractGetTweetBaseByIdUseCase,
   ) {}
 
   async execute({
@@ -51,30 +45,18 @@ export class GetShareByUserId {
     const returnFormat: IGetShareByUserIdReturn[] = [];
 
     for (const share of shares) {
-      const tweetShared = await this.getTweetBaseByIdUseCase.execute(
+      const tweetSharedInfo = await this.getTweetBaseByIdUseCase.execute(
         share.creatorReferenceTweetId,
       );
 
-      const commentNumber =
-        await this.baseTweetRepository.countByParentIdAndType({
-          parentId: share.id,
-          tweetType: TweetTypesEnum.COMMENT,
-        });
-
-      const shareNumber = await this.baseTweetRepository.countByParentIdAndType(
-        {
-          parentId: share.id,
-          tweetType: TweetTypesEnum.SHARE,
-        },
-      );
-      const likeNumber = Object.keys(share.likes).length;
+      const shareInfo = await this.getTweetBaseByIdUseCase.execute(share.id);
 
       returnFormat.push({
-        share,
-        commentNumber,
-        likeNumber,
-        shareNumber,
-        tweetShared,
+        share: share,
+        commentNumber: shareInfo.commentNumber,
+        likeNumber: shareInfo.likeNumber,
+        shareNumber: shareInfo.shareNumber,
+        tweetShared: tweetSharedInfo,
       });
     }
 
