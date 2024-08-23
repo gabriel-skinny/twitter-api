@@ -35,4 +35,30 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
       data.data,
     );
   }
+
+  async findByUserId(userId: string): Promise<T | null> {
+    return this.baseTweetDatabase.find((tweet) => tweet.userId == userId);
+  }
+
+  async findManyByUserId(data: {
+    userId: string;
+    skip?: number;
+    limit?: number;
+    order?: string;
+    orderBy?: { id?: boolean; createdAt?: boolean };
+  }): Promise<T[] | null> {
+    return this.baseTweetDatabase.filter(
+      (tweet) => tweet.userId == data.userId && tweet.type == this._type,
+    );
+  }
+
+  async countByParentIdAndType(data: {
+    parentId: string;
+    tweetType: TweetTypesEnum;
+  }): Promise<number> {
+    return this.baseTweetDatabase.filter(
+      (tweet) =>
+        tweet.parentId == data.parentId && tweet.type == data.tweetType,
+    ).length;
+  }
 }
