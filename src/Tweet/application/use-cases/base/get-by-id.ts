@@ -1,20 +1,30 @@
-import NotFoundCustomError from 'src/Shared/errors/notFound';
 import { BaseTweet, TweetTypesEnum } from '../../entities/baseTweet';
 import AbstractBaseTweetRepository from '../../repositories/base';
+import { AbstractCacheService } from '../../services/cacheService';
 
-interface IGetPostByUserIdReturn {
+export interface IGetBaseTweet {
   shareNumber: number;
   likeNumber: number;
   commentNumber: number;
   tweet: BaseTweet;
 }
 
-export class GetTweetBaseByIdUseCase {
+export abstract class AbstractGetTweetBaseByIdUseCase {
+  abstract execute(id: string): Promise<IGetBaseTweet | null>;
+}
+
+export class GetTweetBaseByIdUseCase
+  implements AbstractGetTweetBaseByIdUseCase
+{
   constructor(
     private readonly baseTweetRepository: AbstractBaseTweetRepository,
+    private readonly cacheService: AbstractCacheService,
   ) {}
 
-  async execute(id: string): Promise<IGetPostByUserIdReturn | null> {
+  async execute(id: string): Promise<IGetBaseTweet | null> {
+    const cachedTweet = (await this.cacheService.get(id)) as IGetBaseTweet;
+    if (cachedTweet) return cachedTweet;
+
     const tweet = await this.baseTweetRepository.findById(id);
 
     if (!tweet) return null;
@@ -32,6 +42,10 @@ export class GetTweetBaseByIdUseCase {
     });
     const likeNumber = Object.keys(tweet.likes).length;
 
-    return { shareNumber, likeNumber, commentNumber, tweet };
+    const returnObject = { shareNumber, likeNumber, commentNumber, tweet };
+
+    await this.cacheService.set({ key: id, value: returnObject });
+
+    return returnObject;
   }
 }
