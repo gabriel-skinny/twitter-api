@@ -1,15 +1,13 @@
+import { TweetTypesEnum } from '../../entities/baseTweet';
 import { Share } from '../../entities/Share';
-import { MakeSomeFieldsRequired } from './makeComment';
 
-type makeShareParams = MakeSomeFieldsRequired<
-  Partial<Share>,
-  'creatorReferenceTweetId' | 'parentId' | 'parentType'
->;
-
-export const makeShare = (params: makeShareParams) => {
+export const makeShare = (params?: Partial<Share>) => {
   return new Share({
     content: 'Teste',
     userId: 'id',
+    creatorReferenceTweetId: 'RandomReference',
+    parentId: 'randonParentId',
+    parentType: TweetTypesEnum.COMMENT,
     ...params,
   });
 };
