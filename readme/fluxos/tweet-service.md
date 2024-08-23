@@ -129,13 +129,23 @@ Suposição:
   - Faz query pegando as informações do post e os comentarios atrelados àquele PostId
   - Pega os likes, comentarios e compartilhamentos
   - Retorna com a informação do tweet relacionado ao ParentId e ao creatorReferenceId
-  - retorno: Comments[]
+  - retorno: CommentsInfo[]
 - Banco: MongoDb
 
 ## Feature: Usuario consegue ver os comentários de um comentário
 
 - Cliente: Request Http
 - Rota autenticada
-- Api: getCommentsByCommentaryId(commentaryId)
+- Api: getCommentsByParenttId(commentaryId)
   - Pega os comentarios no banco pelo commentaryId
   - retorno: Comment[]
+
+## Feature: Usuario consegue ver todos os seus comentários
+
+- Cliente: Request Http
+- Rota autenticada
+- Api: getCommentsByUser(userId)
+  - Pega os comentarios no banco pelo userId
+  - Pega o parent
+  - Se o creator reference for diferente do parent retorna não o retorna
+  - retorno: {CommentInfo, parentTweetInfo: TweetInfo; creatorReferenceTweetInfo?: TweetInfo}[]
