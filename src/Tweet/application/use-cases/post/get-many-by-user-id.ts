@@ -1,7 +1,6 @@
 import { Post } from '../../entities/Post';
-import AbstractBaseTweetRepository from '../../repositories/base';
 import AbstractPostRepository from '../../repositories/post';
-import { GetTweetBaseByIdUseCase } from '../base/get-by-id';
+import { AbstractGetTweetBaseByIdUseCase } from '../base/get-by-id';
 
 interface IGetPostByUserIdParams {
   userId: string;
@@ -11,7 +10,7 @@ interface IGetPostByUserIdParams {
   orderBy?: { id?: boolean; createdAt?: boolean };
 }
 
-interface IGetPostByUserIdReturn {
+export interface IGetPostByUserIdReturn {
   post: Post;
   likeNumber: number;
   shareNumber: number;
@@ -21,8 +20,7 @@ interface IGetPostByUserIdReturn {
 export class GetPostsByUserId {
   constructor(
     private readonly postRepository: AbstractPostRepository,
-    private readonly baseTweetRepository: AbstractBaseTweetRepository,
-    private readonly getTweetBaseByIdUseCase: GetTweetBaseByIdUseCase,
+    private readonly getTweetBaseByIdUseCase: AbstractGetTweetBaseByIdUseCase,
   ) {}
 
   async execute({
@@ -31,7 +29,7 @@ export class GetPostsByUserId {
     perPage,
     orderBy,
     order,
-  }: IGetPostByUserIdParams): Promise<IGetPostByUserIdReturn[]> {
+  }: IGetPostByUserIdParams): Promise<IGetPostByUserIdReturn[] | null> {
     const posts = await this.postRepository.findManyByUserId({
       userId,
       limit: perPage,
