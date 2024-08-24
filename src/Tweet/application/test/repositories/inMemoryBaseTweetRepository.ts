@@ -1,5 +1,7 @@
 import { BaseTweet, TweetTypesEnum } from '../../entities/baseTweet';
-import AbstractBaseTweetRepository from '../../repositories/base';
+import AbstractBaseTweetRepository, {
+  IFindManyPagination,
+} from '../../repositories/base';
 
 export class InMemoryBaseTweetRepository<T extends BaseTweet>
   implements AbstractBaseTweetRepository
@@ -60,5 +62,30 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
       (tweet) =>
         tweet.parentId == data.parentId && tweet.type == data.tweetType,
     ).length;
+  }
+
+  findManyByParentId(
+    data: { parentId: string } & IFindManyPagination,
+  ): Promise<BaseTweet[]> {
+    throw new Error('Method not implemented.');
+  }
+  findManyTweetInfoByUserIdAndTypes(
+    data: {
+      userId: string;
+      tweetTypes: TweetTypesEnum[];
+    } & IFindManyPagination,
+  ): Promise<
+    (BaseTweet & {
+      shareNumber: number;
+      commentNumber: number;
+      wasSharedByUser: boolean;
+      parentTweetInfo?: BaseTweet & {
+        commentNumber: number;
+        shareNumber: number;
+        wasSharedByUser: boolean;
+      };
+    })[]
+  > {
+    throw new Error('Method not implemented.');
   }
 }

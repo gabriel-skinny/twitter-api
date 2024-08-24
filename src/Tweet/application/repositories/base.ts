@@ -1,6 +1,6 @@
 import { BaseTweet, TweetTypesEnum } from '../entities/baseTweet';
 
-interface IFindManyPagination {
+export interface IFindManyPagination {
   skip?: number;
   limit?: number;
   order?: string;
