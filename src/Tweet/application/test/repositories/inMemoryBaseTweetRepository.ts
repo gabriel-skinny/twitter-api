@@ -64,12 +64,15 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
     ).length;
   }
 
-  findManyByParentId(
+  async findManyByParentId(
     data: { parentId: string } & IFindManyPagination,
   ): Promise<BaseTweet[]> {
-    throw new Error('Method not implemented.');
+    return this.baseTweetDatabase.filter(
+      (tweet) => tweet.parentId == data.parentId,
+    );
   }
-  findManyTweetInfoByUserIdAndTypes(
+
+  async findManyTweetInfoByUserIdAndTypes(
     data: {
       userId: string;
       tweetTypes: TweetTypesEnum[];
@@ -86,6 +89,51 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
       };
     })[]
   > {
-    throw new Error('Method not implemented.');
+    const foundedTweets = this.baseTweetDatabase.filter(
+      (tweet) =>
+        tweet.userId == data.userId && data.tweetTypes.includes(tweet.type),
+    );
+
+    let formatReturn = [];
+    for (const tweet of foundedTweets) {
+      /*   const shareNumber = this.baseTweetDatabase.filter(
+        (share) =>
+          share.parentId == tweet.id && share.type == TweetTypesEnum.SHARE,
+      ).length;
+      const commentNumber = this.baseTweetDatabase.filter(
+        (comment) =>
+          comment.parentId == tweet.id &&
+          comment.type == TweetTypesEnum.COMMENT,
+      ).length;
+      const wasSharedByUser = this.baseTweetDatabase.filter(
+        (share) =>
+          share.userId == data.userId &&
+          share.parentId == tweet.id &&
+          share.type == TweetTypesEnum.SHARE,
+      ); */
+
+      const parentTweet = this.baseTweetDatabase.find(
+        (parent) => parent.id == tweet.parentId,
+      );
+      let parentTweetInfo = null;
+      if (parentTweet) {
+        parentTweetInfo = Object.assign(parentTweet, {
+          commentNumber: 0,
+          shareNumber: 0,
+          wasSharedByUser: false,
+        });
+      }
+
+      formatReturn.push(
+        Object.assign(tweet, {
+          shareNumber: 0,
+          commentNumber: 0,
+          wasSharedByUser: false,
+          parentTweetInfo,
+        }),
+      );
+    }
+
+    return formatReturn;
   }
 }
