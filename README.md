@@ -4,7 +4,7 @@ Tentativa de recriar uma api com a maioria das funcionalidades do twitter e que 
 
 ## High-Level Design
 
-![Design](https://github.com/gabriel-skinny/twitter-api/tree/main/readme/fluxos/High-Level-Design.png?raw=true)
+![Alt text](https://github.com/gabriel-skinny/twitter-api/blob/main/High-Level-Design.png)
 
 ## Services
 
