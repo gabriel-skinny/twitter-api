@@ -26,4 +26,23 @@ export default abstract class AbstractBaseTweetRepository<T = BaseTweet> {
     parentId: string;
     tweetType: TweetTypesEnum;
   }): Promise<number>;
+  abstract findManyTweetInfoByUserIdAndTypes(
+    data: {
+      userId: string;
+      tweetTypes: TweetTypesEnum[];
+    } & IFindManyPagination,
+  ): Promise<
+    Array<
+      T & {
+        shareNumber: number;
+        commentNumber: number;
+        wasSharedByUser: boolean;
+        parentTweetInfo?: BaseTweet & {
+          commentNumber: number;
+          shareNumber: number;
+          wasSharedByUser: boolean;
+        };
+      }
+    >
+  >;
 }
