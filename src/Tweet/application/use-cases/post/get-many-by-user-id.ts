@@ -1,13 +1,10 @@
 import { Post } from '../../entities/Post';
+import { IPagination } from '../../interfaces/pagination';
 import AbstractPostRepository from '../../repositories/post';
 import { AbstractGetTweetBaseByIdUseCase } from '../base/get-by-id';
 
 interface IGetPostByUserIdParams {
   userId: string;
-  page?: number;
-  perPage?: number;
-  order?: 'Desc' | 'Asc';
-  orderBy?: { id?: boolean; createdAt?: boolean };
 }
 
 export interface IGetPostByUserIdReturn {
@@ -29,7 +26,9 @@ export class GetPostsByUserId {
     perPage,
     orderBy,
     order,
-  }: IGetPostByUserIdParams): Promise<IGetPostByUserIdReturn[] | null> {
+  }: IGetPostByUserIdParams & IPagination): Promise<
+    IGetPostByUserIdReturn[] | null
+  > {
     const posts = await this.postRepository.findManyByUserId({
       userId,
       limit: perPage,

@@ -1,4 +1,5 @@
 import { Comment } from '../../entities/Comment';
+import { IPagination } from '../../interfaces/pagination';
 import AbstractCommentRepository from '../../repositories/comment';
 import {
   AbstractGetTweetBaseByIdUseCase,
@@ -7,10 +8,6 @@ import {
 
 interface IGetCommentByUserIdParams {
   userId: string;
-  page?: number;
-  perPage?: number;
-  order?: 'Desc' | 'Asc';
-  orderBy?: { id?: boolean; createdAt?: boolean };
 }
 
 interface IGetCommentByUserIdReturn {
@@ -34,7 +31,9 @@ export class GetCommentsByUserId {
     perPage,
     orderBy,
     order,
-  }: IGetCommentByUserIdParams): Promise<IGetCommentByUserIdReturn[]> {
+  }: IGetCommentByUserIdParams & IPagination): Promise<
+    IGetCommentByUserIdReturn[]
+  > {
     const comments = await this.commentRepository.findManyByUserId({
       userId,
       limit: perPage,

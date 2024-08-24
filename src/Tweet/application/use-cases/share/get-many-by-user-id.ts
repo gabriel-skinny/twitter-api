@@ -1,4 +1,5 @@
 import { Share } from '../../entities/Share';
+import { IPagination } from '../../interfaces/pagination';
 import AbstractShareRepository from '../../repositories/share';
 import {
   AbstractGetTweetBaseByIdUseCase,
@@ -7,10 +8,6 @@ import {
 
 interface IGetShareByUserIdParams {
   userId: string;
-  page?: number;
-  perPage?: number;
-  order?: 'Desc' | 'Asc';
-  orderBy?: { id?: boolean; createdAt?: boolean };
 }
 
 interface IGetShareByUserIdReturn {
@@ -33,7 +30,9 @@ export class GetSharesByUserId {
     perPage,
     orderBy,
     order,
-  }: IGetShareByUserIdParams): Promise<IGetShareByUserIdReturn[]> {
+  }: IGetShareByUserIdParams & IPagination): Promise<
+    IGetShareByUserIdReturn[]
+  > {
     const shares = await this.shareRepository.findManyByUserId({
       userId,
       limit: perPage,
