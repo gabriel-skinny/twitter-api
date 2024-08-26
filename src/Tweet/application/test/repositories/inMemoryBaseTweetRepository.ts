@@ -1,6 +1,7 @@
 import { BaseTweet, TweetTypesEnum } from '../../entities/baseTweet';
 import AbstractBaseTweetRepository, {
   IFindManyPagination,
+  ITweetInfo,
 } from '../../repositories/base';
 
 export class InMemoryBaseTweetRepository<T extends BaseTweet>
@@ -65,10 +66,18 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
   }
 
   async findManyByParentId(
-    data: { parentId: string } & IFindManyPagination,
-  ): Promise<BaseTweet[]> {
-    return this.baseTweetDatabase.filter(
+    data: { parentId: string; actualUserId: string } & IFindManyPagination,
+  ): Promise<Array<T & ITweetInfo>> {
+    const tweets = this.baseTweetDatabase.filter(
       (tweet) => tweet.parentId == data.parentId,
+    );
+
+    return tweets.map((tweet) =>
+      Object.assign(tweet, {
+        shareNumber: 0,
+        commentNumber: 0,
+        wasSharedByActualUser: false,
+      }),
     );
   }
 
@@ -78,16 +87,7 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
       tweetTypes: TweetTypesEnum[];
     } & IFindManyPagination,
   ): Promise<
-    (BaseTweet & {
-      shareNumber: number;
-      commentNumber: number;
-      wasSharedByUser: boolean;
-      parentTweetInfo?: BaseTweet & {
-        commentNumber: number;
-        shareNumber: number;
-        wasSharedByUser: boolean;
-      };
-    })[]
+    Array<T & ITweetInfo & { parentTweetInfo?: BaseTweet & ITweetInfo }>
   > {
     const foundedTweets = this.baseTweetDatabase.filter(
       (tweet) =>

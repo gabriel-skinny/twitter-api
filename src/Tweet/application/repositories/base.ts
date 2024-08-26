@@ -7,6 +7,12 @@ export interface IFindManyPagination {
   orderBy?: { id?: boolean; createdAt?: boolean };
 }
 
+export interface ITweetInfo {
+  shareNumber: number;
+  commentNumber: number;
+  wasSharedByActualUser: boolean;
+}
+
 export default abstract class AbstractBaseTweetRepository<T = BaseTweet> {
   abstract save(data: T): Promise<void>;
   abstract existsById(id: string): Promise<boolean>;
@@ -15,8 +21,8 @@ export default abstract class AbstractBaseTweetRepository<T = BaseTweet> {
   abstract updateById(data: { id: string; data: Partial<T> }): Promise<void>;
   abstract findByUserId(userId: string): Promise<T | null>;
   abstract findManyByParentId(
-    data: { parentId: string } & IFindManyPagination,
-  ): Promise<T[]>;
+    data: { parentId: string; actualUserId: string } & IFindManyPagination,
+  ): Promise<Array<T & ITweetInfo>>;
   abstract findManyByUserId(
     data: {
       userId: string;
@@ -32,17 +38,6 @@ export default abstract class AbstractBaseTweetRepository<T = BaseTweet> {
       tweetTypes: TweetTypesEnum[];
     } & IFindManyPagination,
   ): Promise<
-    Array<
-      T & {
-        shareNumber: number;
-        commentNumber: number;
-        wasSharedByUser: boolean;
-        parentTweetInfo?: BaseTweet & {
-          commentNumber: number;
-          shareNumber: number;
-          wasSharedByUser: boolean;
-        };
-      }
-    >
+    Array<T & ITweetInfo & { parentTweetInfo?: BaseTweet & ITweetInfo }>
   >;
 }
