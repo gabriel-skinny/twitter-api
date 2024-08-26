@@ -19,6 +19,11 @@
 - Usuario consegue ver comentários de um tweet
 - Usuario consegue ver comentários de um comentário
 
+## Rotas para outros serviços
+
+- Rota para listar posts de usuarios
+- Rota para listar post e compartilhamentos de um usuario
+
 ## Tweet-Service
 
 ## Feature: Usuario consegue fazer um Tweet
@@ -30,7 +35,7 @@
   - Deixa disponivel no CDN
 - Api: makePost(userId, textContent, media)
   - Salva o post no database
-  - Salva o post no cache do redis
+  - Salva o post no cache do redis como uma list ligada de posts do usuario. Key: tweets-user-id
   - Envia um evento para o Kafka de criação de Post
 - Banco: MongoDb
 
@@ -149,3 +154,9 @@ Suposição:
   - Pega o parent
   - Se o creator reference for diferente do parent retorna não o retorna
   - retorno: {CommentInfo, parentTweetInfo: TweetInfo; creatorReferenceTweetInfo?: TweetInfo}[]
+
+## Feature: Rota para listar posts de usuarios
+
+- Cliente: Request Http
+- Rota autenticada
+- Api: getPostsByUserIds(userIds: string[], startTimeStamp: Date, perPage: number)

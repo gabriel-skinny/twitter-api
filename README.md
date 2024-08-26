@@ -8,7 +8,7 @@ Tentativa de recriar uma api com a maioria das funcionalidades do twitter e que 
 
 ## Services
 
-- [Auth-Gateway]: Gateway de Autenticação
+- [Auth-Gateway](): Gateway de Autenticação
 - [Client-Service](https://github.com/gabriel-skinny/twitter-api/tree/main/src/Client): Serviço que cuida dos Usuarios (Em desenvolvimento)
 - [Tweet-Service](https://github.com/gabriel-skinny/twitter-api/tree/main/src/Tweet): Servico que cuida dos Tweets do Usuario (Em desenvolvimento)
 - [Follow-Service](https://github.com/gabriel-skinny/twitter-api/tree/main/src/Follow): Servico que cuida da lógica de follow (Planejado)

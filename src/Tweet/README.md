@@ -149,3 +149,8 @@ Suposição:
   - Pega o parent
   - Se o creator reference for diferente do parent retorna não o retorna
   - retorno: {CommentInfo, parentTweetInfo: TweetInfo; creatorReferenceTweetInfo?: TweetInfo}[]
+
+### Eventos Sub
+
+- Tweet Criado: Invalidar o cache dos Gets de parentId
+- Tweet Editado: Invalidar o cache do Tweet

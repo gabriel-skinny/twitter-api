@@ -10,9 +10,10 @@
 
 - Client: Http
 - Rota autenticada com login
-- getFeed(userId, page, perPage)
-
+- getFeed(userId, startTimestamp)
   - Verifica se existe um feed pronto no cache
+  - Se não bate no follow-service para pegar os usuario seguidos
+  - Pega os posts dos usuario seguidos em ordem decrescente apartir do timestamp
 
 ### Constroi o feed async
 
@@ -22,10 +23,20 @@
   - Pega os ultimos 20 posts no Tweet-Service desses usuarios seguidos
   - Pega os dados dos usuarios do post no Client-Service
   - Salva o feed no cache por user Id
+  - Envia para o front-end a informação do novo post se o usuario estiver ativo
 
 - Nota: Essa função pode receber 10 milhões requisições para serem executada, se um usuario muito grande postar algo
 
 Soluções: - Ir construindo ao poucos o feed - Priorizar usuario ativos no chamada da função
+
+addToFeed(tweetId, userId)
+
+-
+
+tweetCreated(tweetId, userId)
+
+- Pega todos os followers desse usuário
+- Manda para o redis-channel para rodar o addToFeed para esses usuarios
 
 ## Eventos Sub
 

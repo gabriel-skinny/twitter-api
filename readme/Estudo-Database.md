@@ -56,3 +56,5 @@ Document Database:
 ## Links-usados
 
 Comparing-database-types(https://www.prisma.io/dataguide/intro/comparing-database-types)
+
+## Ecalonamento de Database
