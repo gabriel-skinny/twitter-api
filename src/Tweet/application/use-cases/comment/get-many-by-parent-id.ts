@@ -1,10 +1,11 @@
 import { Comment } from '../../entities/Comment';
 import { IPagination } from '../../interfaces/pagination';
 import AbstractCommentRepository from '../../repositories/comment';
-import { AbstractGetTweetBaseByIdUseCase } from '../base/get-by-id';
+import { AbstractCacheService } from '../../services/cacheService';
 
 interface IGetCommentsByParentIdParams {
   parentId: string;
+  actualUserId: string;
 }
 
 interface IGetCommentsByParentIdReturn {
@@ -14,14 +15,15 @@ interface IGetCommentsByParentIdReturn {
   commentNumber: number;
 }
 
-export class GetCommentsByParentId {
+export class GetCommentsByParentIdUseCase {
   constructor(
     private commentRepository: AbstractCommentRepository,
-    private getTweetBaseByIdUseCase: AbstractGetTweetBaseByIdUseCase,
+    private cacheService: AbstractCacheService,
   ) {}
 
   async execute({
     parentId,
+    actualUserId,
     page,
     perPage,
     order,
@@ -29,8 +31,16 @@ export class GetCommentsByParentId {
   }: IGetCommentsByParentIdParams & IPagination): Promise<
     IGetCommentsByParentIdReturn[]
   > {
+    const resultCached = await this.cacheService.getUseCaseResult<
+      'parentId',
+      IGetCommentsByParentIdReturn[]
+    >({ parentId });
+
+    if (resultCached) return resultCached;
+
     const comments = await this.commentRepository.findManyByParentId({
       parentId,
+      actualUserId,
       limit: perPage,
       skip: page * perPage - perPage,
       order,
@@ -40,17 +50,19 @@ export class GetCommentsByParentId {
     const returnFormat: IGetCommentsByParentIdReturn[] = [];
 
     for (const comment of comments) {
-      const commentInfo = await this.getTweetBaseByIdUseCase.execute(
-        comment.id,
-      );
-
+      const likeNumber = Object.keys(comment.likes).length;
       returnFormat.push({
         comment,
-        commentNumber: commentInfo.commentNumber,
-        likeNumber: commentInfo.likeNumber,
-        shareNumber: commentInfo.shareNumber,
+        commentNumber: comment.commentNumber,
+        likeNumber,
+        shareNumber: comment.shareNumber,
       });
     }
+
+    await this.cacheService.setUseCaseResult<
+      'parentId',
+      IGetCommentsByParentIdReturn[]
+    >({ parentId, useCaseResult: returnFormat });
 
     return returnFormat;
   }
