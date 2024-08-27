@@ -40,4 +40,10 @@ export default abstract class AbstractBaseTweetRepository<T = BaseTweet> {
   ): Promise<
     Array<T & ITweetInfo & { parentTweetInfo?: BaseTweet & ITweetInfo }>
   >;
+  abstract findByUserIdsAndTimeStamp(data: {
+    userIds: string[];
+    startTimestamp: Date;
+    limit: number;
+    actualUserId: string;
+  }): Promise<Array<T & ITweetInfo>>;
 }

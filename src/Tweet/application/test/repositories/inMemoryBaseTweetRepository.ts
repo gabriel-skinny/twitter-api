@@ -136,4 +136,25 @@ export class InMemoryBaseTweetRepository<T extends BaseTweet>
 
     return formatReturn;
   }
+
+  async findByUserIdsAndTimeStamp(data: {
+    userIds: string[];
+    startTimestamp: Date;
+    limit: number;
+    actualUserId: string;
+  }): Promise<(BaseTweet & ITweetInfo)[]> {
+    const posts = this.baseTweetDatabase.filter(
+      (tweet) =>
+        data.userIds.includes(tweet.userId) &&
+        tweet.type == TweetTypesEnum.POST,
+    );
+
+    return posts.map((post) =>
+      Object.assign(post, {
+        commentNumber: 0,
+        shareNumber: 0,
+        wasSharedByActualUser: false,
+      }),
+    );
+  }
 }
